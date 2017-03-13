@@ -1,0 +1,106 @@
+﻿@model MusicWebApp.Areas.Music.Models.GenresViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="container row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <h2>Genres</h2>
+                    <hr />
+
+                    <ul class="list-inline">
+                        @foreach (var genre in Model.list)
+                        {
+                            if (genre.Id == Model.genre.Id)
+                            {
+                                <li class="list-group-item active"><i class="glyphicon glyphicon-chevron-right"></i> @genre.Name</li>
+                            }
+                            else
+                            {
+                                <li class="list-group-item"><i class="glyphicon glyphicon-chevron-right"></i><a href="@Url.Action("Index", "Top100", new { id = genre.Id })"> @genre.Name</a></li>
+                            }
+                        }
+                    </ul>
+                </div>
+                <div class="form-group col-md-12">
+                    <h2>Top 100 Tracks</h2>
+                    <hr />
+
+                    <div class="col-md-12">
+                        <table id="top100" class="table-hover table-responsive">
+                            <thead>
+                                <tr>
+                                    <td colspan="2"><h4 style="color: rgb(110, 0, 128)"><i class="glyphicon glyphicon-music"></i> Top 100 @Model.genre.Name songs</h4></td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $.fn.dataTable.ext.classes.sPageButton = 'btn btn-primary';
+        $.fn.dataTableExt.oStdClasses.sPageButtonActive = "btn-raised";
+
+        LoadTop100();
+    });
+
+    function LoadTop100() {
+        $("#top100").dataTable({
+            "bServerSide": false,
+            "bProcessing": false,
+            "bFilter": false,
+            "bLengthChange": false,
+            "bPaginate": false,
+            "iDisplayLength": 100,
+            "sAjaxSource": "@Url.Action("GetTop100", "Top100")",
+            "fnServerParams": function (aoData) {
+                aoData.push(
+                    { "name": "genresId", "value": @Model.genre.Id }
+                );
+            },
+            "aoColumnDefs": [
+                 {
+                    "aTargets": [0],
+                    "mRender": function (data, type, row)  {
+                        return "<h3>" + row[0] + "</h3>";
+                    },
+                    "bSortable": false,
+                    "className": "text-center",
+                },
+                {
+                    "aTargets": [1],
+                    "mRender": function (data, type, row) {
+                        var track = row[1];
+                        var link = row[2];
+                        var singer = row[3];
+                        var image = row[4];
+                        var display = "" +
+                            "<div class='row'>" +
+                                "<div class='col-md-4'>" +
+                                    "<img src='" + image + "' class='img-responsive' />" +
+                                "</div>" +
+                                "<div class='col-md-8'>" +
+                                    "<b><a href='@Url.Action("Index", "PlayMusic")/?musicid=" + link + "'>" + track + "</a></b><br/>" +
+                                    singer +
+                                "</div>" +
+                            "</div>";
+                        return display;
+                    },
+                    "bSortable": false,
+                },
+            ],
+            "bAutoWidth": false,
+        });
+    }
+</script>
+

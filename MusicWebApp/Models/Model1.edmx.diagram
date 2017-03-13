@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="bfdebdd68d58428b818cadc4e0e8b936" Name="Diagram1">
+        <EntityTypeShape EntityType="MusicModel.Album" Width="1.5" PointX="3" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.Comment" Width="1.5" PointX="10.5" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.Genre" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.Login" Width="1.5" PointX="8.25" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.Music" Width="1.5" PointX="8.25" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.Producer" Width="1.5" PointX="3.75" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.Singer" Width="1.5" PointX="6" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.User" Width="1.5" PointX="6" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="MusicModel.FK_Album_Genre" ManuallyRouted="false" />
+        <AssociationConnector Association="MusicModel.FK_Album_Singer" ManuallyRouted="false" />
+        <AssociationConnector Association="MusicModel.FK_Music_Album" ManuallyRouted="false" />
+        <AssociationConnector Association="MusicModel.FK_Comment_Music" ManuallyRouted="false" />
+        <AssociationConnector Association="MusicModel.FK_Comment_User" ManuallyRouted="false" />
+        <AssociationConnector Association="MusicModel.FK_Music_Genre" ManuallyRouted="false" />
+        <AssociationConnector Association="MusicModel.FK_Singer_Genre" ManuallyRouted="false" />
+        <AssociationConnector Association="MusicModel.FK_Login_User" ManuallyRouted="false" />
+        <AssociationConnector Association="MusicModel.FK_Music_Singer" ManuallyRouted="false" />
+        <AssociationConnector Association="MusicModel.FK_Music_User" ManuallyRouted="false" />
+        <AssociationConnector Association="MusicModel.FK_Singer_Producer" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,113 @@
+﻿@model MusicWebApp.Areas.Music.Models.GenresViewModel
+
+@{
+    ViewBag.Title = "Artists";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .list-group-item.active,
+    .list-group-item.active:hover,
+    .list-group-item.active:focus {
+        color: rgb(95, 0, 109);
+    }
+</style>
+
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Artists Genres</h2>
+            <div class="list-group">
+                @foreach (var gen in Model.list)
+                {
+                    <div class="form-group">
+                        @if (gen.Id == Model.genre.Id)
+                        {
+                            <div class="list-group-item active"><b><i class="glyphicon glyphicon-chevron-right"></i> @gen.Name</b></div>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("SingersList", "Singer", new { genresId = gen.Id })" class="list-group-item"><i class="glyphicon glyphicon-chevron-right"></i> @gen.Name</a>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>@Model.genre.Name</h2>
+                    <table class="table-hover table-responsive" id="artists">
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $.fn.dataTable.ext.classes.sPageButton = 'btn btn-primary';
+        $.fn.dataTableExt.oStdClasses.sPageButtonActive = "btn-raised";
+
+        LoadArtists();
+    });
+
+    function LoadArtists() {
+        $("#artists").dataTable({
+            "bFilter": false,
+            "bLengthChange": false,
+            "bServerSide": true,
+            "bProcessing": true,
+            "bInfo": false,
+            "iDisplayLength": 40,
+            "sAjaxSource": "@Url.Action("GetArtistsList", "Singer")",
+            "fnServerParams": function (aoData) {
+                aoData.push(
+                    { "name": "genresId", "value": @Model.genre.Id }
+                );
+            },
+            "oLanguage": {
+                "oPaginate": {
+                    "sInfo": "",
+                    "sNext": "<i class='glyphicon glyphicon-step-forward'></i>",
+                    "sPrevious": "<i class='glyphicon glyphicon-step-backward'></i>"
+                }
+            },
+            "aoColumnDefs": [
+               {
+                   "aTargets": [0],
+                   "mRender": function (data, type, row)  {
+                       return "<h3>" + row[0] + "</h3>";
+                   },
+                   "bSortable": false,
+                   "className": "text-center",
+               },
+                {
+                    "aTargets": [1],
+                    "mRender": function (data, type, row) {
+                        var singer = row[1];
+                        var link = row[2];
+                        var image = row[3];
+                        var display = "" +
+                            "<div class='row'>" +
+                                "<div class='col-md-2'>" +
+                                    "<img src='" + image + "' class='img-responsive' />" +
+                                "</div>" +
+                                "<div class='col-md-10'>" +
+                                    "<b><a href='@Url.Action("SingerAbout", "Singer")/?singerId=" + link + "'>" + singer + "</a></b><br/>" +
+                                "</div>" +
+                            "</div>";
+                        return display;
+                    },
+                    "bSortable": false,
+                },
+            ],
+            "bAutoWidth": false,
+            });
+    }
+</script>
+

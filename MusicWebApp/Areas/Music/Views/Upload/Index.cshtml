@@ -1,0 +1,155 @@
+﻿@model MusicWebApp.Areas.Music.Models.MusicUploadViewModel
+
+@{
+    ViewBag.Title = "Upload";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form id="form">
+    <div class="col-md-12">
+        <div class="form-horizontal">
+            <div class="row">
+                <div class="form-group">
+                    <label for="title" class="col-md-2 control-label">Title</label>
+                    <div class="col-md-10">
+                        <input type="text" name="Name" class="form-control" id="title" placeholder="Title" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <img src="https://placeholdit.imgix.net/~text?txtsize=28&txt=300%C3%97300&w=300&h=300" id="preview" width="200" height="200" />
+                </div>
+                <div class="form-group">
+                    <label for="image" class="col-md-2 control-label">Image</label>
+                    <div class="col-md-10">
+                        <input type="text" readonly="" class="form-control" placeholder="Choose image only...">
+                        <input type="file" accept="image/*" id="image">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="music" class="col-md-2 control-label">Music</label>
+                    <div class="col-md-10">
+                        <input type="text" readonly="" class="form-control" placeholder="Choose music file...">
+                        <input type="file" accept="audio/mp3" id="music">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="album" class="col-md-2 control-label">Album</label>
+                    <div class="col-md-10">
+                        <select id="album" class="form-control selectpicker show-tick" data-live-search="true" name="AlbumId">
+                            @foreach (var op in Model.listAlbums)
+                            {
+                                <option value="@op.Id">@op.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="singer" class="col-md-2 control-label">Artist</label>
+                    <div class="col-md-10">
+                        <select id="singer" class="form-control selectpicker show-tick" data-live-search="true" name="SingerId">
+                            @foreach (var op in Model.listSigner)
+                            {
+                                <option value="@op.Id">@op.Fullname</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="genres" class="col-md-2 control-label">Genres</label>
+                    <div class="col-md-10">
+                        <select id="genres" class="form-control selectpicker show-tick" data-live-search="true" name="GenresId">
+                            @foreach (var op in Model.listGenres)
+                            {
+                                <option value="@op.Id">@op.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <button type="reset" class="btn btn-default btn-raised">Reset</button>
+        <button type="button" class="btn btn-success btn-raised" onclick="Submit()" id="btnUpload">Upload</button>
+        <div id="message" style="display:none">Placeholder</div>
+    </div>
+</form>
+
+<script>
+    var myImage;
+    var myMusic;
+
+    $(document).ready(function () {
+        $('.selectpicker').selectpicker({
+            style: 'btn-default',
+            size: 10,
+        });
+
+        $("#music").change(function () {
+            myMusic = this.files[0];
+        });
+
+        $("#image").change(function () {
+            readURL(this);
+            myImage = this.files[0];
+        });
+    });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#preview').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function Submit() {
+        $("#btnUpload").attr("disabled", true);
+        $("#message").css("display", "block");
+
+        var progressNotifier = $.connection.progressHub;
+        progressNotifier.client.sendMessage = function (count) {
+            $('#message').html("<b>Uploading ... (" + count + ")</b>");
+        };
+
+        $.connection.hub.start().done(function () {
+            progressNotifier.server.getCountAndMessage();
+        });
+
+        var formData = new FormData($('#form')[0]);
+        formData.append("ImageBase", myImage);
+        formData.append("MusicBase", myMusic);
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Upload", "Upload")",
+            data: formData,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function (result) {
+                if (result.success) {
+                    alert(result.message);
+                    window.location.href = '@Url.Action("Index", "Homepage")';
+                } else {
+                    alert(result.message);
+                }
+            },
+            error: function (error) {
+                alert("Error happened");
+            }
+        });
+    }
+</script>

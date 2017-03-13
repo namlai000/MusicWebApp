@@ -1,0 +1,196 @@
+﻿@model MusicWebApp.Areas.Music.Models.GenresViewModel
+
+@{
+    ViewBag.Title = "Albums";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .list-group-item.active,
+    .list-group-item.active:hover,
+    .list-group-item.active:focus {
+        color: rgb(95, 0, 109);
+    }
+</style>
+
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Album Genres</h2>
+            <div class="list-group">
+                @foreach (var gen in Model.list)
+                {
+                    <div class="form-group">
+                        @if (gen.Id == Model.genre.Id)
+                        {
+                            <div class="list-group-item active"><b><i class="glyphicon glyphicon-chevron-right"></i> @gen.Name</b></div>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Index", "Album", new { genresId = gen.Id })" class="list-group-item"><i class="glyphicon glyphicon-chevron-right"></i> @gen.Name</a>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>@Model.genre.Name Albums</h3>
+                    <hr />
+
+                    <div class="col-md-12">
+                        <ul class="nav nav-pills">
+                            <li class="active"><a href="#top" data-toggle="tab">Top Albums</a></li>
+                            <li><a href="#recent" data-toggle="tab">Recent Albums</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="top">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <table id="mostPop" class="table-hover table-responsive">
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="recent">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <table id="mostRecent" class="table-hover table-responsive">
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $.fn.dataTable.ext.classes.sPageButton = 'btn btn-primary';
+        $.fn.dataTableExt.oStdClasses.sPageButtonActive = "btn-raised";
+
+        LoadTopAlbums();
+        LoadRecentAlbums();
+
+    });
+
+    function LoadRecentAlbums() {
+        $("#mostRecent").dataTable({
+            "bServerSide": true,
+            "bProcessing": true,
+            "bFilter": false,
+            "bLengthChange": false,
+            "bInfo" : false,
+            "iDisplayLength": 20,
+            "sAjaxSource": "@Url.Action("GetRecentAlbumsByGenres", "Album")",
+            "fnServerParams": function (aoData) {
+                aoData.push(
+                    { "name": "genresId", "value": @Model.genre.Id }
+                );
+            },
+            "oLanguage": {
+                "oPaginate": {
+                    "sInfo": "",
+                    "sNext": "<i class='glyphicon glyphicon-step-forward'></i>",
+                    "sPrevious": "<i class='glyphicon glyphicon-step-backward'></i>"
+                }
+            },
+            "aoColumnDefs": [
+                {
+                    "aTargets": [0],
+                    "mRender": function (data, type, row)  {
+                        return "<h3>" + row[0] + "</h3>";
+                    },
+                    "bSortable": false,
+                    "className": "text-center",
+                },
+                {
+                    "aTargets": [1],
+                    "mRender": function (data, type, row) {
+                        var track = row[1];
+                        var link = row[2];
+                        var singer = row[3];
+                        var image = row[4];
+                        var display = "" +
+                            "<div class='row'>" +
+                                "<div class='col-md-2'>" +
+                                    "<img src='" + image + "' class='img-responsive' />" +
+                                "</div>" +
+                                "<div class='col-md-10'>" +
+                                    "<b><a href='@Url.Action("Album", "Album")?albumId=" + link + "'>" + track + "</a></b>" +
+                                    "<a href='@Url.Action("Album", "PlayMusic")?albumId=" + link + "' class='btn btn-default pull-right' data-toggle='tooltip' data-placement='top' title='Listen to this album'><i class='glyphicon glyphicon-music'></i></a><br/>" +
+                                    singer +
+                                "</div>" +
+                            "</div>";
+                        return display;
+                    },
+                    "bSortable": false,
+                },
+            ],
+            "bAutoWidth": false,
+            });
+    }
+
+    function LoadTopAlbums() {
+        $("#mostPop").dataTable({
+            "bServerSide": true,
+            "bProcessing": true,
+            "bFilter": false,
+            "bLengthChange": false,
+            "bInfo" : false,
+            "iDisplayLength": 20,
+            "sAjaxSource": "@Url.Action("GetTopAlbumsByGenres", "Album")",
+            "fnServerParams": function (aoData) {
+                aoData.push(
+                    { "name": "genresId", "value": @Model.genre.Id }
+                );
+            },
+            "oLanguage": {
+                "oPaginate": {
+                    "sInfo": "",
+                    "sNext": "<i class='glyphicon glyphicon-step-forward'></i>",
+                    "sPrevious": "<i class='glyphicon glyphicon-step-backward'></i>"
+                }
+            },
+            "aoColumnDefs": [
+                {
+                    "aTargets": [0],
+                    "mRender": function (data, type, row)  {
+                        return "<h3>" + row[0] + "</h3>";
+                    },
+                    "bSortable": false,
+                    "className": "text-center",
+                },
+                {
+                    "aTargets": [1],
+                    "mRender": function (data, type, row) {
+                        var track = row[1];
+                        var link = row[2];
+                        var singer = row[3];
+                        var image = row[4];
+                        var display = "" +
+                            "<div class='row'>" +
+                                "<div class='col-md-2'>" +
+                                    "<img src='" + image + "' class='img-responsive' />" +
+                                "</div>" +
+                                "<div class='col-md-10'>" +
+                                    "<b><a href='@Url.Action("Album", "Album")?albumId=" + link + "'>" + track + "</a></b>" +
+                                    "<a href='@Url.Action("Album", "PlayMusic")?albumId=" + link + "' class='btn btn-default pull-right' data-toggle='tooltip' data-placement='bottom' title='Listen to this album'><i class='glyphicon glyphicon-music'></i></a><br/>" +
+                                    singer +
+                                "</div>" +
+                            "</div>";
+                        return display;
+                    },
+                    "bSortable": false,
+                },
+            ],
+            "bAutoWidth": false,
+            });
+    }
+</script>

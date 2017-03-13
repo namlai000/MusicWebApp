@@ -1,0 +1,143 @@
+﻿@model MusicWebApp.Models.Album
+
+@{
+    ViewBag.Title = "Play Album";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="col-md-8">
+        <div class="col-md-12">
+            <h3>@Model.Name - <a href="@Url.Action("SingerAbout", "Singer", new { singerId = Model.Singer.Id })" data-toggle="tooltip" data-placement="right" title="Click to view details about this singer">@Model.Singer.Fullname</a></h3>
+            <hr />
+        </div>
+        <div class="col-md-12">
+            <div class='jAudio' style="width: 80%">
+                <audio id="aud" controls hidden></audio>
+                <div class='jAudio--ui'>
+                    <div class='jAudio--thumb'></div>
+                    <div class='jAudio--status-bar'>
+                        <div class='jAudio--details'></div>
+                        <div class='jAudio--volume-bar'></div>
+                        <div class='jAudio--progress-bar'>
+                            <div class='jAudio--progress-bar-wrapper'>
+                                <div class='jAudio--progress-bar-played'>
+                                    <span class='jAudio--progress-bar-pointer'></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='jAudio--time'>
+                            <span class='jAudio--time-elapsed'>00:00</span>
+                            <span class='jAudio--time-total'>00:00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class='jAudio--playlist'>
+                </div>
+                <div class='jAudio--controls'>
+                    <ul>
+                        <li><button type="button" class='jAudio--control jAudio--control-prev' data-action='prev'><span></span></button></li>
+                        <li><button type="button" id="play" class='jAudio--control jAudio--control-play' data-action='play'><span></span></button></li>
+                        <li><button type="button" class='jAudio--control jAudio--control-next' data-action='next'><span></span></button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <i class="glyphicon glyphicon-tags"></i> Tags:
+                </div>
+            </div>
+            <div class="form-group" style="margin-top:0px">
+                <ul class="list-inline col-md-12">
+                    <li class="list-group-item">
+                        <a href="@Url.Action("Index", "MusicTracks", new { id = Model.Genre.Id })">@Model.Genre.Name</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="col-md-12">
+            <table id="sameSongs" border="0" class="table-hover table-responsive">
+                <thead>
+                    <tr>
+                        <td>
+                            <font color="purple"><b>Same genre songs that you may like!</b></font>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $.fn.dataTable.ext.classes.sPageButton = 'btn btn-primary';
+        $.fn.dataTableExt.oStdClasses.sPageButtonActive = "btn-raised";
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        LoadAlbum();
+        LoadSameSongs();
+    });
+
+    function LoadAlbum() {
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("LoadAlbumSong", "PlayMusic")',
+            data: { albumId : '@Model.Id' },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success) {
+                    var t = data.data;
+                    $(".jAudio").jAudio(t);
+                    $('#play').click();
+
+                    var oAudio = document.getElementById('aud');
+                    oAudio.volume = 1.0;
+                }
+            }
+        });
+    }
+
+    function LoadSameSongs() {
+        $("#sameSongs").dataTable({
+            "bFilter": false,
+            "bPaginate": false,
+            "sAjaxSource": "@Url.Action("GetSameSongs", "PlayMusic")",
+            "fnServerParams": function (aoData) {
+                aoData.push(
+                    { "name": "genresId", "value": "@Model.Genre.Id" }
+                );
+            },
+            "aoColumnDefs": [
+                {
+                    "aTargets": [0],
+                    "mRender": function (data, type, row) {
+                        var track = row[0];
+                        var link = row[1];
+                        var singer = row[2];
+                        var image = row[3];
+                        var display = "" +
+                            "<div class='row'>" +
+                                "<div class='col-md-4'>" +
+                                    "<img src='" + image + "' class='img-responsive' />" +
+                                "</div>" +
+                                "<div class='col-md-8'>" +
+                                    "<b><a href='@Url.Action("Index", "PlayMusic")/?musicid=" + link + "'>" + track + "</a></b><br/>" +
+                                    singer +
+                                "</div>" +
+                            "</div>";
+                        return display;
+                    },
+                    "bSortable": false,
+                },
+            ],
+            "bAutoWidth": false,
+        });
+    }
+</script>
+

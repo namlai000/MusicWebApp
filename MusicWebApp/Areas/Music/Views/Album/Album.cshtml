@@ -1,0 +1,151 @@
+﻿@model MusicWebApp.Models.Album
+
+@{
+    ViewBag.Title = "Album";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Album</h2>
+
+<div class="col-md-12">
+    <div class="form-group row">
+        <div class="col-md-12">
+            <div class="col-md-2">
+                <img src="@Model.Image" class="img-circle img-responsive" />
+            </div>
+            <div class="col-md-10">
+                <h2>@Model.Name</h2>
+                <hr />
+                <ul>
+                    <li class="text-info">Genres: @Model.Genre.Name</li>
+                    <li class="text-info">Publish Date: @Model.UploadDate.Value.ToString("dd/MM/yyyy")</li>
+                    <li class="text-info">Total @Model.Musics.Count music tracks</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-9">
+            <div class="container row">
+                <div class="col-md-12">
+                    <table class="table-hover" id="albumTracks"></table>
+                </div>
+                <div class="col-md-12">
+                    <a href="@Url.Action("Album", "PlayMusic", new { albumId = Model.Id })" class="btn btn-primary btn-raised"><i class="glyphicon glyphicon-music"></i> Listen to this album!</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <table class="table-hover" id="randomAlbums">
+                <thead><tr><td><font color="purple"><b>Random @Model.Genre.Name albums you may like!</b></font></td></tr></thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $.fn.dataTable.ext.classes.sPageButton = 'btn btn-primary';
+        $.fn.dataTableExt.oStdClasses.sPageButtonActive = "btn-raised";
+
+        LoadSongs();
+        LoadSameAlbums();
+    });
+
+    function LoadSameAlbums() {
+        $("#randomAlbums").dataTable({
+            "bServerSide": false,
+            "bProcessing": false,
+            "bFilter": false,
+            "bLengthChange": false,
+            "bPaginate": false,
+            "iDisplayLength": 20,
+            "sAjaxSource": "@Url.Action("GetSameAlbums", "Album")",
+            "fnServerParams": function (aoData) {
+                aoData.push(
+                    { "name": "genresId", "value": @Model.Genre.Id }
+                );
+            },
+            "aoColumnDefs": [
+                {
+                    "aTargets": [0],
+                    "mRender": function (data, type, row) {
+                        var track = row[0];
+                        var link = row[1];
+                        var singer = row[2];
+                        var image = row[3];
+                        var display = "" +
+                            "<div class='row'>" +
+                                "<div class='col-md-4'>" +
+                                    "<img src='" + image + "' class='img-responsive' />" +
+                                "</div>" +
+                                "<div class='col-md-8'>" +
+                                    "<b><a href='@Url.Action("Album", "Album")/?albumId=" + link + "'>" + track + "</a></b><br/>" +
+                                    singer +
+                                "</div>" +
+                            "</div>";
+                        return display;
+                    },
+                    "bSortable": false,
+                },
+            ],
+            "bAutoWidth": false,
+            });
+    }
+
+    function LoadSongs() {
+        $("#albumTracks").dataTable({
+            "bServerSide": true,
+            "bProcessing": true,
+            "bFilter": true,
+            "bLengthChange": false,
+            "bInfo" : false,
+            "iDisplayLength": 10,
+            "sAjaxSource": "@Url.Action("GetsSongsByAlbum", "Album")",
+            "fnServerParams": function (aoData) {
+                aoData.push(
+                    { "name": "albumId", "value": @Model.Id }
+                );
+            },
+            "oLanguage": {
+                "oPaginate": {
+                    "sInfo": "",
+                    "sNext": "<i class='glyphicon glyphicon-step-forward'></i>",
+                    "sPrevious": "<i class='glyphicon glyphicon-step-backward'></i>"
+                }
+            },
+            "aoColumnDefs": [
+                {
+                    "aTargets": [0],
+                    "mRender": function (data, type, row)  {
+                        return "<h3>" + row[0] + "</h3>";
+                    },
+                    "bSortable": false,
+                    "className": "text-center",
+                },
+                {
+                    "aTargets": [1],
+                    "mRender": function (data, type, row) {
+                        var track = row[1];
+                        var link = row[2];
+                        var singer = row[3];
+                        var image = row[4];
+                        var display = "" +
+                            "<div class='row'>" +
+                                "<div class='col-md-2'>" +
+                                    "<img src='" + image + "' class='img-responsive' />" +
+                                "</div>" +
+                                "<div class='col-md-10'>" +
+                                    "<b><a href='@Url.Action("Index", "PlayMusic")?musicid=" + link + "'>" + track + "</a></b><br/>" +
+                                    singer +
+                                "</div>" +
+                            "</div>";
+                        return display;
+                    },
+                    "bSortable": false,
+                },
+            ],
+            "bAutoWidth": false,
+        });
+    }
+</script>

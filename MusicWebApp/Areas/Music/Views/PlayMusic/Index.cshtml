@@ -1,0 +1,245 @@
+﻿@model MusicWebApp.Models.Music
+
+@{
+    ViewBag.Title = "Music";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    td {
+        word-wrap:break-word;
+        overflow-wrap:break-word;
+    }
+</style>
+
+<div class="col-md-12">
+    <div class="col-md-8">
+        <div class="col-md-12">
+            <h3>@Model.Name - <a href="@Url.Action("SingerAbout", "Singer", new { singerId = Model.Singer.Id })" data-toggle="tooltip" data-placement="top" title="Click to view details about this singer">@Model.Singer.Fullname</a></h3>
+            <hr />
+        </div>
+        <div class="col-md-12">
+            <div class='jAudio' style="width: 80%">
+                <audio id="aud" controls hidden></audio>
+                <div class='jAudio--ui'>
+                    <div class='jAudio--thumb'></div>
+                    <div class='jAudio--status-bar'>
+                        <div class='jAudio--details'></div>
+                        <div class='jAudio--volume-bar'></div>
+                        <div class='jAudio--progress-bar'>
+                            <div class='jAudio--progress-bar-wrapper'>
+                                <div class='jAudio--progress-bar-played'>
+                                    <span class='jAudio--progress-bar-pointer'></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='jAudio--time'>
+                            <span class='jAudio--time-elapsed'>00:00</span>
+                            <span class='jAudio--time-total'>00:00</span>
+                        </div>
+                    </div>
+                </div>
+                @*<div class='jAudio--playlist'>
+                    </div>*@
+                <div class='jAudio--controls'>
+                    <ul>
+                        <li><button type="button" class='jAudio--control jAudio--control-prev' data-action='prev'><span></span></button></li>
+                        <li><button type="button" id="play" class='jAudio--control jAudio--control-play' data-action='play'><span></span></button></li>
+                        <li><button type="button" class='jAudio--control jAudio--control-next' data-action='next'><span></span></button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <a class="btn btn-raised btn-inverse" href="@Model.Link">Download</a>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <i class="glyphicon glyphicon-tags"></i> Tags:
+                </div>
+            </div>
+            <div class="form-group" style="margin-top:0px">
+                <ul class="list-inline col-md-12">
+                    <li class="list-group-item">
+                        <a href="@Url.Action("Index", "MusicTracks", new { id = Model.Genre.Id })">@Model.Genre.Name</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <br />
+        <div class="col-md-12">
+            <div class="form-group label-floating">
+                <label class="control-label" for="focusedInput2">Write your comment here!</label>
+                <div class="form-inline">
+                    <input class="form-control" id="focusedInput2" type="text" maxlength="255" oninput="Validate()" />
+                    <button class="btn btn-default btn-raised" onclick="Comment()">Comment</button>
+                </div>
+                <p class="help-block" id="help">Comments have 255 characters left</p>           
+            </div>
+            <table id="comments" border="0" class="table-hover table-responsive">
+                <thead>
+                    <tr>
+                        <td>
+                            <font color="purple">Comments!</font>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="col-md-12">
+            <table id="sameSongs" border="0" class="table-hover table-responsive">
+                <thead>
+                    <tr>
+                        <td>
+                            <font color="purple"><b>Same genre songs that you may like!</b></font>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $.fn.dataTable.ext.classes.sPageButton = 'btn btn-primary';
+        $.fn.dataTableExt.oStdClasses.sPageButtonActive = "btn-raised";
+
+        var t = {
+            playlist: [
+              {
+                  file: "@Model.Link",
+                  thumb: "@Model.Image",
+                  trackName: "@Model.Name",
+                  trackArtist: "@Model.Singer.Fullname",
+                  trackAlbum: "Single",
+              },
+            ]
+        }
+
+        $(".jAudio").jAudio(t);
+        $('#play').click();
+
+        var oAudio = document.getElementById('aud');
+        oAudio.volume = 1.0;
+
+        LoadSameSongs();
+        LoadComments();
+    });
+
+    function Validate() {
+        var help = document.getElementById('help');
+        if ($('#focusedInput2').val().length <= 255) {
+            var left = 255 - $('#focusedInput2').val().length;
+            help.innerHTML = "Comments have " + left + " characters left";
+        }
+    }
+
+    function Comment() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PostComment", "PlayMusic")',
+            data: {
+                musicId : @Model.Id,
+                userId : 1,
+                comment : $('#focusedInput2').val()
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success) {
+                    var oTable = $("#comments").dataTable();
+                    oTable._fnPageChange(0);
+                    oTable._fnAjaxUpdate();
+                    $('#focusedInput2').val("");
+                }
+            }
+        });
+    }
+
+    function LoadComments() {
+        $("#comments").dataTable({
+            "bFilter": false,
+            "bLengthChange": false,
+            "bServerSide": true,
+            "bProcessing": true,
+            "bInfo": false,
+            "iDisplayLength": 10,
+            "sAjaxSource": "@Url.Action("GetComments", "PlayMusic")",
+            "fnServerParams": function (aoData) {
+                aoData.push(
+                    { "name": "musicId", "value": "@Model.Id" }
+                );
+            },
+            "oLanguage": {
+                "oPaginate": {
+                    "sInfo": "",
+                    "sNext": "<i class='glyphicon glyphicon-step-forward'></i>",
+                    "sPrevious": "<i class='glyphicon glyphicon-step-backward'></i>"
+                }
+            },
+            "aoColumnDefs": [
+               {
+                   "aTargets": [0],
+                   "mRender": function (data, type, row) {
+                       var user = row[0];
+                       var comment = row[1];
+                       var image = row[2];
+                       var display = "" +
+                           "<div class='row'>" +
+                               "<div class='col-md-2'>" +
+                                   "<img src='" + image + "' class='img-responsive' />" +
+                               "</div>" +
+                               "<div class='col-md-10'>" +
+                                   "<b>" + user + "</b><br />" +
+                                   "<i class='glyphicon glyphicon-chevron-right'></i> " + comment +
+                               "</div>" +
+                           "</div>";
+                       return display;
+                   },
+                   "bSortable": false,
+               },
+            ],
+            "bAutoWidth": false,
+        });
+    }
+
+    function LoadSameSongs() {
+        $("#sameSongs").dataTable({
+            "bFilter": false,
+            "bPaginate": false,
+            "sAjaxSource": "@Url.Action("GetSameSongs", "PlayMusic")",
+            "fnServerParams": function (aoData) {
+                aoData.push(
+                    { "name": "genresId", "value": "@Model.Genre.Id" }
+                );
+            },
+            "aoColumnDefs": [
+                {
+                    "aTargets": [0],
+                    "mRender": function (data, type, row) {
+                        var track = row[0];
+                        var link = row[1];
+                        var singer = row[2];
+                        var image = row[3];
+                        var display = "" +
+                            "<div class='row'>" +
+                                "<div class='col-md-4'>" +
+                                    "<img src='" + image + "' class='img-responsive' />" +
+                                "</div>" +
+                                "<div class='col-md-8'>" +
+                                    "<b><a href='@Url.Action("Index", "PlayMusic")/?musicid=" + link + "'>" + track + "</a></b><br/>" +
+                                    singer +
+                                "</div>" +
+                            "</div>";
+                        return display;
+                    },
+                    "bSortable": false,
+                },
+            ],
+            "bAutoWidth": false,
+        });
+    }
+</script>

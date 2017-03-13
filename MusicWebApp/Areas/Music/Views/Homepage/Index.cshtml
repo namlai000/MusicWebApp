@@ -1,0 +1,285 @@
+﻿
+@{
+    ViewBag.Title = "Bring music to your soul";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="col-md-9">
+        <h3 style="color: rgb(94, 0, 108)"><b>Most popular music in this week!</b></h3>
+        <hr />
+        <table id="weekPopularMusic" border="0" class="table-responsive">
+            <tr>
+                <td colspan="3" class="big-banner">
+                    <a href="#" class="week-link">
+                        <img src="https://www.wpfreeware.com/wp-content/uploads/2014/09/placeholder-images.jpg" data-caption="Placeholder" class="week img-responsive big-image" style="width:100%" />
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="#" class="week-link">
+                        <img src="https://www.wpfreeware.com/wp-content/uploads/2014/09/placeholder-images.jpg" data-caption="Placeholder" class="week img-responsive" />
+                    </a>
+                </td>
+                <td>
+                    <a href="#" class="week-link">
+                        <img src="https://www.wpfreeware.com/wp-content/uploads/2014/09/placeholder-images.jpg" data-caption="Placeholder" class="week img-responsive" />
+                    </a>
+                </td>
+                <td>
+                    <a href="#" class="week-link">
+                        <img src="https://www.wpfreeware.com/wp-content/uploads/2014/09/placeholder-images.jpg" data-caption="Placeholder" class="week img-responsive" />
+                    </a>
+                </td>
+            </tr>
+        </table>
+        <hr />
+
+        <h4 style="color: rgb(94, 0, 108)"><b>Artists you may Like!</b></h4>
+        <hr />
+        <table id="recommendArtists" border="0" class="table-responsive">
+            <tbody></tbody>
+        </table>
+        <hr />
+
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4">
+                    <table id="newMusic" border="0" class="table-hover table-responsive">
+                        <thead>
+                            <tr>
+                                <td>Newest Music Tracks</td>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="col-md-4">
+                    <table id="newAlbums" border="0" class="table-hover table-responsive">
+                        <thead>
+                            <tr>
+                                <td>Newest Albums</td>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="col-md-4">
+                    <table id="newComment" border="0" class="table-hover table-responsive">
+                        <thead>
+                            <tr>
+                                <td>Newest Comments</td>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <table id="tableTop10" border="0" class="table-hover table-responsive">
+            <thead>
+                <tr>
+                    <td>
+                        <font color="purple"><b>Top 10 Music Tracks this month</b></font>
+                    </td>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#weekPopularMusic').sliphover({
+            caption: 'data-caption'
+        });
+        $('#recommendArtists').sliphover({
+            caption: 'data-caption'
+        });
+
+        LoadTableTop10();
+        LoadPopularArtist();
+        LoadWeekPopular();
+        LoadNewestTracks();
+        LoadNewestAlbums();
+        LoadNewestComments();
+    });
+
+    function LoadWeekPopular() {
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetMostPopularMusic", "Homepage")',
+            dataType: 'json',
+            success: function (data) {
+                if (data.success) {
+                    var i = 0;
+                    $('.week').each(function () {
+                        $(this).prop('src', data.data[i][0]);
+                        $(this).attr('data-caption', "" + "<h4 style='padding:8px'>" + data.data[i][2] + "</h4>");
+                        i++;
+                    });
+                    var i = 0;
+                    $('.week-link').each(function () {
+                        $(this).prop('href', "@Url.Action("Index", "PlayMusic")/?musicid=" + data.data[i][1]);
+                        i++;
+                    });
+                }
+            }
+        });
+    }
+
+    function LoadPopularArtist() {
+        var table = $('#recommendArtists tbody');
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetArtistYouMayLike", "Homepage")',
+            dataType: 'json',
+            success: function (data) {
+                if (data.success) {
+                    var i = 1;
+                    var array = data.data;
+                    for (var d in array) {
+                        if (i < 2) {
+                            table.append("<tr>");
+                        }
+                        table.append("<td><a href='@Url.Action("SingerAbout", "Singer")/?singerId=" + array[d][1] + "'><img src='" + array[d][0] + "' class='img-responsive' data-caption='" + array[d][2] + "'/></td></a>");
+                        if (i > 5) {
+                            table.append("</tr>");
+                            i = 0;
+                        }
+                        i++;
+                    }
+                }
+            }
+        });
+    }
+
+    function LoadTableTop10() {
+        $("#tableTop10").dataTable({
+            "bFilter": false,
+            "bPaginate": false,
+            "sAjaxSource": "@Url.Action("GetTop10", "Homepage")",
+            "aoColumnDefs": [
+                {
+                    "aTargets": [0],
+                    "mRender": function (data, type, row) {
+                        var track = row[0];
+                        var link = row[1];
+                        var singer = row[2];
+                        var image = row[3];
+                        var display = "" +
+                            "<div class='row'>" +
+                                "<div class='col-md-4'>" +
+                                    "<img src='" + image + "' class='img-responsive' />" +
+                                "</div>" +
+                                "<div class='col-md-8'>" +
+                                    "<b><a href='@Url.Action("Index", "PlayMusic")/?musicid=" + link + "'>" + track + "</a></b><br/>" +
+                                    singer +
+                                "</div>" +
+                            "</div>";
+                        return display;
+                    },
+                    "bSortable": false,
+                },
+            ],
+            "bAutoWidth": false,
+        });
+    }
+
+    function LoadNewestTracks() {
+        $("#newMusic").dataTable({
+            "bFilter": false,
+            "bPaginate": false,
+            "sAjaxSource": "@Url.Action("GetNewestTracks", "Homepage")",
+            "aoColumnDefs": [
+                {
+                    "aTargets": [0],
+                    "mRender": function (data, type, row) {
+                        var track = row[0];
+                        var link = row[1];
+                        var singer = row[2];
+                        var image = row[3];
+                        var display = "" +
+                            "<div class='row'>" +
+                                "<div class='col-md-4'>" +
+                                    "<img src='" + image + "' class='img-responsive' />" +
+                                "</div>" +
+                                "<div class='col-md-8'>" +
+                                    "<b><a href='@Url.Action("Index", "PlayMusic")/?musicid=" + link + "'>" + track + "</a></b><br/>" +
+                                    singer +
+                                "</div>" +
+                            "</div>";
+                        return display;
+                    },
+                    "bSortable": false,
+                },
+            ],
+            "bAutoWidth": false,
+        });
+    }
+
+    function LoadNewestAlbums() {
+        $("#newAlbums").dataTable({
+            "bFilter": false,
+            "bPaginate": false,
+            "sAjaxSource": "@Url.Action("GetNewestAlbums", "Homepage")",
+            "aoColumnDefs": [
+                {
+                    "aTargets": [0],
+                    "mRender": function (data, type, row) {
+                        var track = row[0];
+                        var link = row[1];
+                        var singer = row[2];
+                        var image = row[3];
+                        var display = "" +
+                            "<div class='row'>" +
+                                "<div class='col-md-4'>" +
+                                    "<img src='" + image + "' class='img-responsive' />" +
+                                "</div>" +
+                                "<div class='col-md-8'>" +
+                                    "<b><a href='@Url.Action("Album", "Album")?albumId=" + link + "'>" + track + "</a></b><br/>" +
+                                    singer +
+                                "</div>" +
+                            "</div>";
+                        return display;
+                    },
+                    "bSortable": false,
+                },
+            ],
+            "bAutoWidth": false,
+        });
+    }
+
+    function LoadNewestComments() {
+        $("#newComment").dataTable({
+            "bFilter": false,
+            "bPaginate": false,
+            "sAjaxSource": "@Url.Action("GetNewestComments", "Homepage")",
+            "aoColumnDefs": [
+                {
+                    "aTargets": [0],
+                    "mRender": function (data, type, row) {
+                        var track = row[0];
+                        var link = row[1];
+                        var username = row[2];
+                        var image = row[3];
+                        var comment = row[4];
+                        var display = "" +
+                            "<div class='row'>" +
+                                "<div class='col-md-4'>" +
+                                    "<img src='" + image + "' class='img-responsive' />" +
+                                "</div>" +
+                                "<div class='col-md-8'>" +
+                                    "<b>" + comment + "</b><br />" +
+                                    username + " - <b><a href='@Url.Action("Index", "PlayMusic")/?musicid=" + link + "'>" + track + "</a></b><br/>" +
+                                "</div>" +
+                            "</div>";
+                        return display;
+                    },
+                    "bSortable": false,
+                },
+            ],
+            "bAutoWidth": false,
+        });
+    }
+</script>

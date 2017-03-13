@@ -1,0 +1,83 @@
+﻿@model List<MusicWebApp.Models.Genre>
+
+@{
+    ViewBag.Title = "Artists";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        $('.table-responsive').sliphover({
+            caption: 'data-caption'
+        });
+    });
+
+    var GetArtists = function LoadArtists(name, id) {
+        var table = $('#' + name + ' tbody');
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetArtists", "Singer")',
+            data: { id: id },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success) {
+                    var i = 1;
+                    var array = data.data;
+                    for (var d in array) {
+                        if (i < 2) {
+                            table.append("<tr>");
+                        }
+                        table.append("<td>" +
+                                        "<div class='col-md-12'>" +
+                                            "<a href='@Url.Action("SingerAbout", "Singer")/?singerId=" + array[d][2] + "'>" +
+                                                "<img src='" + array[d][0] + "' class='img-responsive' data-caption='" + array[d][1] + "'/>" +
+                                            "</a>" +
+                                        "</div>" +
+                                     "</td>");
+                        if (i > 5) {
+                            table.append("</tr>");
+                            i = 0;
+                        }
+                        i++;
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Artists Genres</h2>
+            <div class="list-group">
+                @foreach (var gen in Model)
+                {
+                    <div class="form-group">
+                        <a href="@Url.Action("SingersList", "Singer", new { genresId = gen.Id })" class="list-group-item"><i class="glyphicon glyphicon-chevron-right"></i> @gen.Name</a>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                @foreach (var gen in Model)
+                {
+                    string tableName = gen.Name + "Table";
+                    tableName = tableName.Replace(" ", "");
+
+                    <div class="form-group col-md-12">
+                        <h2><a href="@Url.Action("SingersList", "Singer", new { genresId = gen.Id })">@gen.Name</a></h2>
+                        <table id="@tableName" border="0" class="table-responsive" cellspacing="1">
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <script>
+                        GetArtists('@tableName', '@gen.Id');
+                    </script>
+                }
+            </div>
+        </div>
+    </div>
+</div>

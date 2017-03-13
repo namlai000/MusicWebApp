@@ -1,0 +1,378 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - FPT Music</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+    <!-- Material design -->
+    <link href="~/Content/Plugins/bootstrap-material-design/css/bootstrap-material-design.min.css" rel="stylesheet" />
+    <link href="~/Content/Plugins/bootstrap-material-design/css/ripples.min.css" rel="stylesheet" />
+    <script src="~/Content/Plugins/bootstrap-material-design/js/material.min.js"></script>
+    <script src="~/Content/Plugins/bootstrap-material-design/js/ripples.min.js"></script>
+    <!-- Datatables -->
+    <link href="~/Content/Plugins/DataTables-1.10.13/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="~/Content/Plugins/DataTables-1.10.13/js/jquery.dataTables.min.js"></script>
+    <!-- jAudio -->
+    <link href="~/Content/Plugins/jAudio/css/main.min.css" rel="stylesheet" />
+    <script src="~/Content/Plugins/jAudio/js/jaudio.min.js"></script>
+    <!-- Sliphover -->
+    <script src="~/Content/Plugins/sliphover/jquery.sliphover.min.js"></script>
+    <!-- Bootstrap-select -->
+    <link href="~/Content/Plugins/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet" />
+    <script src="~/Content/Plugins/bootstrap-select/js/bootstrap-select.min.js"></script>
+    <!-- SignalR -->
+    <script src="~/Scripts/jquery.signalR-2.2.1.min.js"></script>
+    @Scripts.Render("/signalr/hubs")
+
+    <style>
+        td {
+            height: 100%;
+            max-height: 250px;
+        }
+
+        .big-banner {
+            height: 100%;
+            max-height: 400px;
+        }
+
+        img {
+            max-height: 250px !important;
+        }
+
+        .big-image {
+            max-height: 400px !important;
+        }
+
+        table.dataTable thead .sorting,
+        table.dataTable thead .sorting_asc,
+        table.dataTable thead .sorting_desc {
+            background: none;
+        }
+
+        .navbar-inverse {
+            background-color: black;
+        }
+
+        .navbar-default {
+            background-color: rgb(216, 216, 216);
+            border-color: #ffffff;
+        }
+
+            .navbar-default .navbar-brand {
+                color: #000000;
+            }
+
+                .navbar-default .navbar-brand:hover,
+                .navbar-default .navbar-brand:focus {
+                    color: #e134ff;
+                }
+
+            .navbar-default .navbar-text {
+                color: #000000;
+            }
+
+            .navbar-default .navbar-nav > li > a {
+                color: #000000;
+            }
+
+                .navbar-default .navbar-nav > li > a:hover,
+                .navbar-default .navbar-nav > li > a:focus {
+                    color: #e134ff;
+                }
+
+            .navbar-default .navbar-nav > .active > a,
+            .navbar-default .navbar-nav > .active > a:hover,
+            .navbar-default .navbar-nav > .active > a:focus {
+                color: #e134ff;
+                background-color: #ffffff;
+            }
+
+            .navbar-default .navbar-nav > .open > a,
+            .navbar-default .navbar-nav > .open > a:hover,
+            .navbar-default .navbar-nav > .open > a:focus {
+                color: #e134ff;
+                background-color: #ffffff;
+            }
+
+            .navbar-default .navbar-toggle {
+                border-color: #ffffff;
+            }
+
+                .navbar-default .navbar-toggle:hover,
+                .navbar-default .navbar-toggle:focus {
+                    background-color: #ffffff;
+                }
+
+                .navbar-default .navbar-toggle .icon-bar {
+                    background-color: #000000;
+                }
+
+            .navbar-default .navbar-collapse,
+            .navbar-default .navbar-form {
+                border-color: #000000;
+            }
+
+            .navbar-default .navbar-link {
+                color: #000000;
+            }
+
+                .navbar-default .navbar-link:hover {
+                    color: #e134ff;
+                }
+
+        @@media (max-width: 767px) {
+            .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+                color: #000000;
+            }
+
+                .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+                .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+                    color: #e134ff;
+                }
+
+            .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+            .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+            .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+                color: #e134ff;
+                background-color: #ffffff;
+            }
+        }
+
+        body {
+            padding-top: 160px;
+        }
+
+        @@media (max-width: 767px) {
+            body {
+                padding-top: 0px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    @{
+        MusicWebApp.Models.MusicEntities en = new MusicWebApp.Models.MusicEntities();
+        var login = en.Logins.FirstOrDefault(a => a.Username.Equals(HttpContext.Current.User.Identity.Name));
+        MusicWebApp.Models.User userLogin = null;
+        if (login != null)
+        {
+            userLogin = login.User;
+        }
+    }
+
+    <div class="navbar navbar-fixed-top">
+        <div class="nav navbar-inverse col-md-12">
+            <div class="container">
+                <div class="col-md-12">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        @Html.ActionLink("FPT Music", "Index", "Homepage", new { area = "Music" }, new { @class = "navbar-brand" })
+                    </div>
+                    <div class="navbar-collapse">
+                        <div class="col-md-12">
+                            <div class="nav navbar-nav">
+                                <div class="navbar-form" style="padding-left: 48px">
+                                    <input id="txtSearch" type="text" class="form-control" placeholder="Search ..." />
+                                </div>
+                            </div>
+                            <ul class="nav navbar-nav" style="float: right">
+                                @if (userLogin != null)
+                                {
+                                    <li>
+                                        <a href="#" data-target="#" data-toggle="dropdown">
+                                            <img src="@userLogin.Avatar" class="img-circle" width="40" height="40"/> 
+                                            <span style="padding-left:8px">Welcome <b>@userLogin.FirstName @userLogin.LastName</b></span> 
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">Profile</a></li>
+                                            <li><a href="#">Manage Uploads</a></li>
+                                            <li><a href="#">Notification</a></li>
+                                            <li class="divider"></li>
+                                            <li><a href="@Url.Action("Logout", "Auth")"><i class="glyphicon glyphicon-log-out"></i> Sign out</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a href="#" id="btnSignup">Sign Up</a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Login", "Auth")">Login</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="nav navbar-default col-md-12 navbar-collapse">
+            <div class="container">
+                <div class="col-md-12">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="@Url.Action("Index", "MusicTracks", new { id = 0 })" class="navbar-link">Music Tracks</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Singer")" id="btnSingers" class="navbar-link">Artists</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Album", new { genresId = 0 })" class="navbar-link">Albums</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Top100", new { id = 0 })" class="navbar-link">Top 100</a>
+                        </li>
+                        <li>
+                            <div class="nav navbar-nav" style="padding-left:24px">
+                                <a href="@Url.Action("Index", "Upload")" class="btn btn-raised btn-primary">Upload</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BODY START HERE ----------------------------------------------------------------------->
+
+    <div class="container body-content">
+        <div class="col-md-12">
+            @RenderBody()
+        </div>
+    </div>
+
+    <!-- FOOTER ----------------------------------------------------------------------->
+    <footer style="position:absolute;width:100%">
+        <div class="container col-md-12" style="color:white">
+            <div class="form-horizontal">
+                <div class="form-group col-md-5">
+                    <h3>Your location</h3>
+                    <div id="mapholder" class="col-md-12"></div>
+                </div>
+                <div class="form-group col-md-3">
+                    <h3>Connect with us</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div class="col-md-12">
+                                <a href="#"><h4><i class="glyphicon glyphicon-facetime-video"></i> Facebook</h4></a>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="col-md-12">
+                                <a href="#"><h4><i class="glyphicon glyphicon-asterisk"></i> Twitter</h4></a>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="col-md-12">
+                                <a href="#"><h4><i class="glyphicon glyphicon-globe"></i> Google+</h4></a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="form-group col-md-2">
+                    <h3>Support</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div class="col-md-12">
+                                <a href="#"><h4>Support</h4></a>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="col-md-12">
+                                <a href="#"><h4>Map</h4></a>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="col-md-12">
+                                <a href="#"><h4>EULA</h4></a>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="col-md-12">
+                                <a href="#"><h4>NCCI</h4></a>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="col-md-12">
+                                <a href="#"><h4>Career</h4></a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="form-group col-md-2">
+                    <h3>External Links</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div class="col-md-12">
+                                <a href="#"><h4>3G/4G</h4></a>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="#"><h4>Copyright</h4></a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
+<script>
+    $(document).ready(function () {
+        $.material.init();
+        GetLocation();
+        $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+    });
+
+    function GetLocation() {
+        if (navigator.geolocation) navigator.geolocation.getCurrentPosition(showPosition, showError);
+        else {
+            var map = document.getElementById('mapholder');
+            map.innerHTML = "Your browser doesn't support geolocation!";
+        }
+    }
+
+    function showPosition(position) {
+        var lat = position.coords.latitude + "," + position.coords.longitude;
+        var imgUrl = "https://maps.googleapis.com/maps/api/staticmap?center="
+        + lat + "&zoom=14&size=400x300&sensor=false&key=AIzaSyBU7xtZiE0EGa5YWtcgyq5QVAzUHfyMMAQ";
+        var map = document.getElementById('mapholder');
+        map.innerHTML = "<img src='" + imgUrl + "' class='img-responsive'/>";
+    }
+
+    function showError(error) {
+        var map = document.getElementById('mapholder');
+        switch (error.code) {
+            case error.PERMISSION_DENIED:
+                map.innerHTML = "Permission denied";
+                break;
+            case error.POSITION_UNAVAILABLE:
+                map.innerHTML = "Position unavailable";
+                break;
+            case error.TIMEOUT:
+                map.innerHTML = "Time out";
+                break;
+            case error.UNKNOWN_ERROR:
+                map.innerHTML = "Unknown error";
+                break;
+            default:
+                map.innerHTML = "Other errors";
+                break;
+        }
+    }
+</script>
