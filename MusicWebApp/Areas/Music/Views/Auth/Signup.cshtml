@@ -100,7 +100,8 @@
         };
 
         $.connection.hub.start().done(function () {
-            progressNotifier.server.sendMessage('');
+            var connectionId = $.connection.hub.id;
+            console.log(connectionId);
         });
     });
 

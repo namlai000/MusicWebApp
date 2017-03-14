@@ -85,7 +85,7 @@ namespace MusicWebApp.Areas.Music.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { succress = false, message = ex.Message });
+                return Json(new { succress = true, message = ex.Message });
             }
 
             return Json(new { success = true, message = message });

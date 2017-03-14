@@ -95,15 +95,6 @@
             size: 10,
         });
 
-        var progressNotifier = $.connection.progressHub;
-        progressNotifier.client.sendMessage = function (count) {
-            $('#message').html("<b>" + count + "</b>");
-        };
-
-        $.connection.hub.start().done(function () {
-            progressNotifier.server.sendMessage('');
-        });
-
         $("#music").change(function () {
             myMusic = this.files[0];
         });
@@ -111,6 +102,16 @@
         $("#image").change(function () {
             readURL(this);
             myImage = this.files[0];
+        });
+
+        var progressNotifier = $.connection.progressHub;
+        progressNotifier.client.sendMessage = function (count) {
+            $('#message').html("<b>" + count + "</b>");
+        };
+
+        $.connection.hub.start().done(function () {
+            var connectionId = $.connection.hub.id;
+            console.log(connectionId);
         });
     });
 
