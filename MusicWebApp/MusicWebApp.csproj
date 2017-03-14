@@ -416,6 +416,7 @@
     <Content Include="Content\Plugins\bootstrap-select\css\bootstrap-select.css.map" />
     <Content Include="Content\Plugins\bootstrap-select\js\bootstrap-select.js.map" />
     <Content Include="Areas\Music\Views\Top100\Index.cshtml" />
+    <Content Include="Areas\Music\Views\Auth\Signup.cshtml" />
     <None Include="Properties\PublishProfiles\musicproject3 - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\musicproject3 - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -469,7 +470,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Music\Views\Auth\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

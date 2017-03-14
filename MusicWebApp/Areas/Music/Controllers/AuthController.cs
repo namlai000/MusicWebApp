@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicWebApp.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -19,6 +20,12 @@ namespace MusicWebApp.Areas.Music.Controllers
         {
             FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Homepage");
+        }
+
+        public ActionResult Signup()
+        {
+            var user = new Login();
+            return View(user);
         }
     }
 }

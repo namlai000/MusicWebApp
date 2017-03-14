@@ -161,7 +161,7 @@
 
     @{
         MusicWebApp.Models.MusicEntities en = new MusicWebApp.Models.MusicEntities();
-        var login = en.Logins.FirstOrDefault(a => a.Username.Equals(HttpContext.Current.User.Identity.Name));
+        MusicWebApp.Models.Login login = null; //en.Logins.FirstOrDefault(a => a.Username.Equals(HttpContext.Current.User.Identity.Name));
         MusicWebApp.Models.User userLogin = null;
         if (login != null)
         {
@@ -288,27 +288,27 @@
                     <ul class="list-group">
                         <li class="list-group-item">
                             <div class="col-md-12">
-                                <a href="#"><h4>Support</h4></a>
+                                <a href="#"><h5>Support</h5></a>
                             </div>
                         </li>
                         <li class="list-group-item">
                             <div class="col-md-12">
-                                <a href="#"><h4>Map</h4></a>
+                                <a href="#"><h5>Map</h5></a>
                             </div>
                         </li>
                         <li class="list-group-item">
                             <div class="col-md-12">
-                                <a href="#"><h4>EULA</h4></a>
+                                <a href="#"><h5>EULA</h5></a>
                             </div>
                         </li>
                         <li class="list-group-item">
                             <div class="col-md-12">
-                                <a href="#"><h4>NCCI</h4></a>
+                                <a href="#"><h5>NCCI</h5></a>
                             </div>
                         </li>
                         <li class="list-group-item">
                             <div class="col-md-12">
-                                <a href="#"><h4>Career</h4></a>
+                                <a href="#"><h5>Career</h5></a>
                             </div>
                         </li>
                     </ul>
@@ -318,10 +318,10 @@
                     <ul class="list-group">
                         <li class="list-group-item">
                             <div class="col-md-12">
-                                <a href="#"><h4>3G/4G</h4></a>
+                                <a href="#"><h5>3G/4G</h5></a>
                             </div>
                             <div class="col-md-12">
-                                <a href="#"><h4>Copyright</h4></a>
+                                <a href="#"><h5>Copyright</h5></a>
                             </div>
                         </li>
                     </ul>

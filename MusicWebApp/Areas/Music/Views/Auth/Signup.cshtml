@@ -1,0 +1,51 @@
+﻿@model MusicWebApp.Models.Login
+
+@{
+    ViewBag.Title = "Signup";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <form id="form">
+        <div class="row container">
+            <h3>Signup</h3>
+            <hr />
+            <div class="col-md-12">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        @Html.LabelFor(a => a.Username, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(a => a.Username, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(a => a.Password, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            @Html.PasswordFor(a => a.Password, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="https://placeholdit.imgix.net/~text?txtsize=28&txt=300%C3%97300&w=300&h=300" id="preview" width="200" height="200" />
+                            </div>
+                            <div class="col-md-10">
+                                <label for="image" class="col-md-2 control-label">Avatar</label>
+                                <div class="col-md-10">
+                                    <input type="text" readonly="" class="form-control" placeholder="Choose image only...">
+                                    <input type="file" accept="image/*" id="image">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(a => a.User.Email, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(a => a.User.Email, new { @class = "form-control", type = "email" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
