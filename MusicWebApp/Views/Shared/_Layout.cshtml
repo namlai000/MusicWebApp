@@ -27,6 +27,9 @@
     <!-- Bootstrap-select -->
     <link href="~/Content/Plugins/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet" />
     <script src="~/Content/Plugins/bootstrap-select/js/bootstrap-select.min.js"></script>
+    <!-- Sweet alert -->
+    <link href="~/Content/Plugins/sweet-alert/sweetalert.css" rel="stylesheet" />
+    <script src="~/Content/Plugins/sweet-alert/sweetalert.min.js"></script>
     <!-- SignalR -->
     <script src="~/Scripts/jquery.signalR-2.2.1.min.js"></script>
     @Scripts.Render("/signalr/hubs")
@@ -161,7 +164,7 @@
 
     @{
         MusicWebApp.Models.MusicEntities en = new MusicWebApp.Models.MusicEntities();
-        MusicWebApp.Models.Login login = null; //en.Logins.FirstOrDefault(a => a.Username.Equals(HttpContext.Current.User.Identity.Name));
+        MusicWebApp.Models.Login login = en.Logins.FirstOrDefault(a => a.Username.Equals(HttpContext.Current.User.Identity.Name));
         MusicWebApp.Models.User userLogin = null;
         if (login != null)
         {
@@ -194,7 +197,14 @@
                                     <li>
                                         <a href="#" data-target="#" data-toggle="dropdown">
                                             <img src="@userLogin.Avatar" class="img-circle" width="40" height="40"/> 
-                                            <span style="padding-left:8px">Welcome <b>@userLogin.FirstName @userLogin.LastName</b></span> 
+                                            @if (!string.IsNullOrEmpty(userLogin.FirstName) || !string.IsNullOrEmpty(userLogin.FirstName))
+                                            {
+                                                <span style="padding-left:8px">Welcome <b>@userLogin.FirstName @userLogin.LastName</b></span>
+                                            }
+                                            else
+                                            {
+                                                <span style="padding-left:8px">Welcome <b>@login.Username</b></span>
+                                            }
                                         </a>
                                         <ul class="dropdown-menu">
                                             <li><a href="#">Profile</a></li>
@@ -208,7 +218,7 @@
                                 else
                                 {
                                     <li>
-                                        <a href="#" id="btnSignup">Sign Up</a>
+                                        <a href="@Url.Action("Signup", "Auth")">Sign Up</a>
                                     </li>
                                     <li>
                                         <a href="@Url.Action("Login", "Auth")">Login</a>

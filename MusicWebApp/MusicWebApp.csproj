@@ -194,6 +194,7 @@
     <Compile Include="Areas\Music\Models\MusicUploadViewModel.cs" />
     <Compile Include="Areas\Music\Models\Playlists.cs" />
     <Compile Include="Areas\Music\Models\ProgressHub.cs" />
+    <Compile Include="Areas\Music\Models\RegisterUserViewModel.cs" />
     <Compile Include="Areas\Music\MusicAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -370,6 +371,9 @@
     <Content Include="Content\Plugins\jAudio\js\jaudio.js" />
     <Content Include="Content\Plugins\jAudio\js\jaudio.min.js" />
     <Content Include="Content\Plugins\sliphover\jquery.sliphover.min.js" />
+    <Content Include="Content\Plugins\sweet-alert\sweetalert-dev.js" />
+    <Content Include="Content\Plugins\sweet-alert\sweetalert.css" />
+    <Content Include="Content\Plugins\sweet-alert\sweetalert.min.js" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

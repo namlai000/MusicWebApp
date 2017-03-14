@@ -117,7 +117,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                 {
                     a.Music.Name,
                     a.Music.Id,
-                    a.User.FirstName + " " + a.User.LastName,
+                    !string.IsNullOrEmpty(a.User.FirstName) && !string.IsNullOrEmpty(a.User.LastName) ? (a.User.FirstName + " " + a.User.LastName) : a.User.Logins.FirstOrDefault().Username,
                     a.User.Avatar,
                     a.Comment1,
                 });

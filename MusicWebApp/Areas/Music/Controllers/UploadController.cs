@@ -41,6 +41,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                     .Child("Images")
                     .Child(date + model.ImageBase.FileName)
                     .PutAsync(stream1);
+                task1.Progress.ProgressChanged += (s, e) => ProgressHub.SendMessage("Uploading Image ... (" + (int)((float)e.Position / (float)e.Length * 100) + "%)");
                 string imageUrl = await task1;
 
                 var stream2 = model.MusicBase.InputStream;
@@ -49,7 +50,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                     .Child("Musics")
                     .Child(date + model.MusicBase.FileName)
                     .PutAsync(stream2);
-                task2.Progress.ProgressChanged += (s, e) => ProgressHub.SendMessage(e.Percentage);
+                task2.Progress.ProgressChanged += (s, e) => ProgressHub.SendMessage("Uploading Music ... (" + (int)((float)e.Position / (float)e.Length * 100) + "%)");
                 string musicUrl = await task2;
 
                 MusicEntities en = new MusicEntities();

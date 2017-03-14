@@ -95,6 +95,15 @@
             size: 10,
         });
 
+        var progressNotifier = $.connection.progressHub;
+        progressNotifier.client.sendMessage = function (data) {
+            $('#message').html("<b>" + data + "</b>");
+        };
+
+        $.connection.hub.start().done(function () {
+            progressNotifier.server.sendMessage('');
+        });
+
         $("#music").change(function () {
             myMusic = this.files[0];
         });
@@ -119,15 +128,6 @@
         $("#btnUpload").attr("disabled", true);
         $("#message").css("display", "block");
 
-        var progressNotifier = $.connection.progressHub;
-        progressNotifier.client.sendMessage = function (count) {
-            $('#message').html("<b>Uploading ... (" + count + ")</b>");
-        };
-
-        $.connection.hub.start().done(function () {
-            progressNotifier.server.getCountAndMessage();
-        });
-
         var formData = new FormData($('#form')[0]);
         formData.append("ImageBase", myImage);
         formData.append("MusicBase", myMusic);
@@ -141,14 +141,16 @@
             cache: false,
             success: function (result) {
                 if (result.success) {
-                    alert(result.message);
+                    sweetAlert("Done!", "Upload success", "success");
                     window.location.href = '@Url.Action("Index", "Homepage")';
                 } else {
-                    alert(result.message);
+                    sweetAlert("Failed!", result.message, "error");
+                    $("#btnUpload").attr("disabled", false);
                 }
             },
             error: function (error) {
-                alert("Error happened");
+                sweetAlert("Failed!", "Error happened", "error");
+                $("#btnUpload").attr("disabled", false);
             }
         });
     }
