@@ -38,7 +38,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                 var stream1 = model.ImageBase.InputStream;
                 var task1 = new FirebaseStorage(storageUrl)
                     .Child("MusicProject")
-                    .Child("TEST")
+                    .Child("Images")
                     .Child(date + model.ImageBase.FileName)
                     .PutAsync(stream1);
                 task1.Progress.ProgressChanged += (s, e) => ProgressHub.SendMessage("Uploading Image ... (" + Math.Round((e.Position * 1.0 / e.Length * 100), 0) + "%)");
@@ -47,7 +47,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                 var stream2 = model.MusicBase.InputStream;
                 var task2 = new FirebaseStorage(storageUrl)
                     .Child("MusicProject")
-                    .Child("TEST")
+                    .Child("Musics")
                     .Child(date + model.MusicBase.FileName)
                     .PutAsync(stream2);
                 task2.Progress.ProgressChanged += (s, e) => ProgressHub.SendMessage("Uploading Music ... (" + Math.Round((e.Position * 1.0 / e.Length * 100), 0) + "%)");
@@ -77,7 +77,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                 };
 
                 en.Musics.Add(music);
-                int updateRow = await en.SaveChangesAsync();
+                int updateRow = en.SaveChanges();
                 if (updateRow > 0)
                 {
                     message = "Save successful";
