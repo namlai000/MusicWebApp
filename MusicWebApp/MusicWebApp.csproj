@@ -61,8 +61,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -187,6 +187,7 @@
     <Compile Include="Areas\Music\Controllers\HomepageController.cs" />
     <Compile Include="Areas\Music\Controllers\MusicTracksController.cs" />
     <Compile Include="Areas\Music\Controllers\PlayMusicController.cs" />
+    <Compile Include="Areas\Music\Controllers\SearchController.cs" />
     <Compile Include="Areas\Music\Controllers\SingerController.cs" />
     <Compile Include="Areas\Music\Controllers\Top100Controller.cs" />
     <Compile Include="Areas\Music\Controllers\UploadController.cs" />
@@ -421,6 +422,7 @@
     <Content Include="Content\Plugins\bootstrap-select\js\bootstrap-select.js.map" />
     <Content Include="Areas\Music\Views\Top100\Index.cshtml" />
     <Content Include="Areas\Music\Views\Auth\Signup.cshtml" />
+    <Content Include="Areas\Music\Views\Search\Index.cshtml" />
     <None Include="Properties\PublishProfiles\musicproject3 - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\musicproject3 - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />

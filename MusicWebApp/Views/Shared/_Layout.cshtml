@@ -347,6 +347,17 @@
         $.material.init();
         GetLocation();
         $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+
+        $('#txtSearch').on('keypress', function (e) {
+            var search = $('#txtSearch').val();
+            if (e.which === 13 && search != '') {
+                $(this).attr("disabled", "disabled");
+                
+                window.location.href = "/Music/Search/Index/?searchText=" + search;
+
+                $(this).removeAttr("disabled");
+            }
+        });
     });
 
     function GetLocation() {

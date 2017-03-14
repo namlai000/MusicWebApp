@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -75,7 +76,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                 test = test.Where(a => a.Genre.Id == gen.Id);
             }
 
-            //string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/genres/" + gen.Id;
+            //string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/genres/" + genresId;
             //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             //WebResponse response = request.GetResponse();
             //List<MusicWebApp.Models.Music> test = null;
@@ -83,7 +84,8 @@ namespace MusicWebApp.Areas.Music.Controllers
             //{
             //    StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
             //    var json = reader.ReadToEnd();
-            //    test = JsonMapper.ToObject<List<MusicWebApp.Models.Music>>(json);
+            //    //test = JsonConvert.ToObject<List<MusicWebApp.Models.Music>>(json);
+            //    test = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
             //}
 
             var c = test.Count();
@@ -135,7 +137,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                     a.Image,
                 });
 
-            return Json( new{ data = data }, JsonRequestBehavior.AllowGet);
+            return Json(new { data = data }, JsonRequestBehavior.AllowGet);
         }
     }
 
