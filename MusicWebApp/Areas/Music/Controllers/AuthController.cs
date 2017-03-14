@@ -50,10 +50,10 @@ namespace MusicWebApp.Areas.Music.Controllers
                     var stream2 = model.ImageBase.InputStream;
                     var task2 = new FirebaseStorage(storageUrl)
                         .Child("MusicProject")
-                        .Child("Images")
+                        .Child("TEST")
                         .Child(date + "-" + model.ImageBase.FileName)
                         .PutAsync(stream2);
-                    task2.Progress.ProgressChanged += (s, e) => ProgressHub.SendMessage("Uploading User Avatar ... (" + (int)((float)e.Position / (float)e.Length * 100) + "%)");
+                    task2.Progress.ProgressChanged += (s, e) => ProgressHub.SendMessage("Uploading User Avatar ... (" + Math.Round((e.Position * 1.0 / e.Length * 100), 0) + "%)");
                     string imageUrl = await task2;
 
                     Login newUser = new Login

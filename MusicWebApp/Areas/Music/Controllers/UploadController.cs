@@ -38,19 +38,19 @@ namespace MusicWebApp.Areas.Music.Controllers
                 var stream1 = model.ImageBase.InputStream;
                 var task1 = new FirebaseStorage(storageUrl)
                     .Child("MusicProject")
-                    .Child("Images")
+                    .Child("TEST")
                     .Child(date + model.ImageBase.FileName)
                     .PutAsync(stream1);
-                task1.Progress.ProgressChanged += (s, e) => ProgressHub.SendMessage("Uploading Image ... (" + (int)((float)e.Position / (float)e.Length * 100) + "%)");
+                task1.Progress.ProgressChanged += (s, e) => ProgressHub.SendMessage("Uploading Image ... (" + Math.Round((e.Position * 1.0 / e.Length * 100), 0) + "%)");
                 string imageUrl = await task1;
 
                 var stream2 = model.MusicBase.InputStream;
                 var task2 = new FirebaseStorage(storageUrl)
                     .Child("MusicProject")
-                    .Child("Musics")
+                    .Child("TEST")
                     .Child(date + model.MusicBase.FileName)
                     .PutAsync(stream2);
-                task2.Progress.ProgressChanged += (s, e) => ProgressHub.SendMessage("Uploading Music ... (" + (int)((float)e.Position / (float)e.Length * 100) + "%)");
+                task2.Progress.ProgressChanged += (s, e) => ProgressHub.SendMessage("Uploading Music ... (" + Math.Round((e.Position * 1.0 / e.Length * 100), 0) + "%)");
                 string musicUrl = await task2;
 
                 MusicEntities en = new MusicEntities();
@@ -85,7 +85,7 @@ namespace MusicWebApp.Areas.Music.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { succress = true, message = ex.Message });
+                return Json(new { succress = false, message = ex.Message });
             }
 
             return Json(new { success = true, message = message });
