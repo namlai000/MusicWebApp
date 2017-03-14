@@ -96,8 +96,8 @@
         });
 
         var progressNotifier = $.connection.progressHub;
-        progressNotifier.client.sendMessage = function (data) {
-            $('#message').html("<b>" + data + "</b>");
+        progressNotifier.client.sendMessage = function (count) {
+            $('#message').html("<b>" + count + "</b>");
         };
 
         $.connection.hub.start().done(function () {
