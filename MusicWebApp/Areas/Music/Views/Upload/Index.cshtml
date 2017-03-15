@@ -126,33 +126,41 @@
     }
 
     function Submit() {
-        $("#btnUpload").attr("disabled", true);
-        $("#message").css("display", "block");
+        if ($('#title').val() == '') {
+            sweetAlert("Failed!", "Title can't be blank", "error");
+        } else if ($('#image').val() == '') {
+            sweetAlert("Failed!", "Image can't be blank", "error");
+        } else if ($('#music').val() == '') {
+            sweetAlert("Failed!", "Music can't be blank", "error");
+        } else {
+            $("#btnUpload").attr("disabled", true);
+            $("#message").css("display", "block");
 
-        var formData = new FormData($('#form')[0]);
-        formData.append("ImageBase", myImage);
-        formData.append("MusicBase", myMusic);
+            var formData = new FormData($('#form')[0]);
+            formData.append("ImageBase", myImage);
+            formData.append("MusicBase", myMusic);
 
-        $.ajax({
-            type: "POST",
-            url: "@Url.Action("Upload", "Upload")",
-            data: formData,
-            processData: false,
-            contentType: false,
-            cache: false,
-            success: function (result) {
-                if (result.success) {
-                    sweetAlert("Done!", "Upload success", "success");
-                    window.location.href = '@Url.Action("Index", "Homepage")';
-                } else {
-                    sweetAlert("Failed!", result.message, "error");
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Upload", "Upload")",
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (result) {
+                    if (result.success) {
+                        sweetAlert("Done!", "Upload success", "success");
+                        window.location.href = '@Url.Action("Index", "Homepage")';
+                    } else {
+                        sweetAlert("Failed!", result.message, "error");
+                        $("#btnUpload").attr("disabled", false);
+                    }
+                },
+                error: function (error) {
+                    sweetAlert("Failed!", "Error happened", "error");
                     $("#btnUpload").attr("disabled", false);
                 }
-            },
-            error: function (error) {
-                sweetAlert("Failed!", "Error happened", "error");
-                $("#btnUpload").attr("disabled", false);
-            }
-        });
+            });
+        }
     }
 </script>

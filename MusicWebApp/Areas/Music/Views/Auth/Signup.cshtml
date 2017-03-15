@@ -116,32 +116,48 @@
     }
 
     function Submit() {
-        $("#btnSignup").attr("disabled", true);
-        $("#message").css("display", "block");
+        if ($('#Username').val() == '') {
+            sweetAlert("Failed!", "Username can't be blank", "error");
+        } else if ($('#Password').val() == '') {
+            sweetAlert("Failed!", "Password can't be blank", "error");
+        } else if ($('#Email').val() == '') {
+            sweetAlert("Failed!", "Email can't be blank", "error");
+        } else if ($('#image').val() == '') {
+            sweetAlert("Failed!", "Image can't be blank", "error");
+        } else if ($('#Firstname').val() == '') {
+            sweetAlert("Failed!", "Firstname can't be blank", "error");
+        } else if ($('#Lastname').val() == '') {
+            sweetAlert("Failed!", "Lastname can't be blank", "error");
+        } else if ($('#Phone').val() == '') {
+            sweetAlert("Failed!", "Phone can't be blank", "error");
+        } else {
+            $("#btnSignup").attr("disabled", true);
+            $("#message").css("display", "block");
 
-        var formData = new FormData($('#form')[0]);
-        formData.append("ImageBase", myImage);
+            var formData = new FormData($('#form')[0]);
+            formData.append("ImageBase", myImage);
 
-        $.ajax({
-            type: "POST",
-            url: "@Url.Action("Signup", "Auth")",
-            data: formData,
-            processData: false,
-            contentType: false,
-            cache: false,
-            success: function (result) {
-                if (result.success) {
-                    sweetAlert("Done!", "Register success", "success");
-                    window.location.href = '@Url.Action("Login", "Auth")';
-                } else {
-                    sweetAlert("Failed!", result.message, "error");
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Signup", "Auth")",
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (result) {
+                    if (result.success) {
+                        sweetAlert("Done!", "Register success", "success");
+                        window.location.href = '@Url.Action("Login", "Auth")';
+                    } else {
+                        sweetAlert("Failed!", result.message, "error");
+                        $("#btnSignup").attr("disabled", false);
+                    }
+                },
+                error: function (error) {
+                    alert("Error happened");
                     $("#btnSignup").attr("disabled", false);
                 }
-            },
-            error: function (error) {
-                alert("Error happened");
-                $("#btnSignup").attr("disabled", false);
-            }
-        });
+            });
+        }
     }
 </script>

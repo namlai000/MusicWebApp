@@ -40,7 +40,8 @@ namespace MusicWebApp.Areas.Music.Controllers
             if (login != null)
             {
                 return Json(new { success = false, message = "Username exist, Please choose another username!" });
-            } else
+            }
+            else
             {
                 try
                 {
@@ -77,7 +78,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                 {
                     return Json(new { success = false, message = ex.Message });
                 }
-                
+
             }
 
             return Json(new { success = true });
