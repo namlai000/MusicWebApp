@@ -9,12 +9,15 @@
 
 namespace MusicWebApp.Models
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+
     public partial class Comment
     {
         public int Id { get; set; }
+        [JsonProperty(PropertyName = "Comment")]
         public string Comment1 { get; set; }
         public Nullable<int> UserId { get; set; }
         public Nullable<int> MusicId { get; set; }

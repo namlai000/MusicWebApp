@@ -1,8 +1,12 @@
 ﻿using MusicWebApp.Areas.Music.Models;
 using MusicWebApp.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -33,12 +37,24 @@ namespace MusicWebApp.Areas.Music.Controllers
         public ActionResult GetTopAlbumsByGenres(JQueryDataTableParamModel param, int genresId)
         {
             MusicEntities en = new MusicEntities();
+            List<Album> test = null;
 
-            var gen = GenresEntities.InitialModels().FirstOrDefault(a => a.Id == genresId);
-            var test = en.Albums.Where(a => true);
-            if (gen.Id != 0)
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/album/genres/" + genresId;
+            if (genresId == 0)
             {
-                test = test.Where(a => a.Genre.Id == gen.Id);
+                test = en.Albums.Where(a => true).ToList();
+            }
+            else
+            {
+                //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+                //WebResponse response = request.GetResponse();
+                //using (Stream responseStream = response.GetResponseStream())
+                //{
+                //    StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                //    var json = reader.ReadToEnd();
+                //    test = JsonConvert.DeserializeObject<List<Album>>(json);
+                //}
+                test = en.Albums.Where(a => a.Genre.Id == genresId).ToList();
             }
 
             var c = test.Count();
@@ -47,7 +63,6 @@ namespace MusicWebApp.Areas.Music.Controllers
                 .OrderBy(a => a.UploadDate)
                 .Skip(param.iDisplayStart)
                 .Take(param.iDisplayLength)
-                .ToList()
                 .Select(a => new IConvertible[]
                 {
                     start++,

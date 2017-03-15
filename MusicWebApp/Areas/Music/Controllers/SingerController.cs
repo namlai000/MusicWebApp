@@ -1,8 +1,12 @@
 ﻿using MusicWebApp.Areas.Music.Models;
 using MusicWebApp.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -38,11 +42,19 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetArtistsAlbums(JQueryDataTableParamModel param, int singerId)
         {
-            MusicEntities en = new MusicEntities();
-            var test = en.Albums.Where(a => a.Singer.Id == singerId);
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/album/singer/" + singerId;
+            List<Album> test = null;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                test = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Album>>(json);
+            }
 
             var t = param.sSearch == null ? "" : param.sSearch;
-            var searched = test.AsEnumerable().Where(a => a.Name.ToLower().Contains(t.ToLower()));
+            var searched = test.Where(a => a.Name.ToLower().Contains(t.ToLower()));
             var c = searched.Count();
             var start = param.iDisplayStart + 1;
             var data = searched
@@ -68,11 +80,19 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetArtistsSongs(JQueryDataTableParamModel param, int singerId)
         {
-            MusicEntities en = new MusicEntities();
-            var test = en.Musics.Where(a => a.Singer.Id == singerId);
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/singer/" + singerId;
+            List<MusicWebApp.Models.Music> test = null;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                test = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
+            }
 
             var t = param.sSearch == null ? "" : param.sSearch;
-            var searched = test.AsEnumerable().Where(a => a.Name.ToLower().Contains(t.ToLower()));
+            var searched = test.Where(a => a.Name.ToLower().Contains(t.ToLower()));
             var c = searched.Count();
             var start = param.iDisplayStart + 1;
             var data = searched
@@ -99,9 +119,8 @@ namespace MusicWebApp.Areas.Music.Controllers
         public ActionResult GetArtistsList(JQueryDataTableParamModel param, int genresId)
         {
             MusicEntities en = new MusicEntities();
-            var gen = GenresEntities.InitialModels().FirstOrDefault(a => a.Id == genresId);
             var test = en.Singers.Where(a => true);
-            if (gen.Id != 0)
+            if (genresId != 0)
             {
                 test = en.Singers.Where(a => a.Genre.Id == genresId);
             }

@@ -58,7 +58,7 @@ namespace MusicWebApp.Areas.Music.Controllers
             MusicEntities en = new MusicEntities();
             var data = en.Singers
                 .OrderByDescending(a => a.Birthday)
-                .Take(12)
+                .Take(10)
                 .ToList()
                 .Select(a => new IConvertible[]
                 {
