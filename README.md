@@ -7,3 +7,4 @@ Include
 - Test database
 - Signin/Signup module
 - Stream music/album
+- Upload/Download music with Firebase API and Firebase Storage using FirebaseStorage.NET
