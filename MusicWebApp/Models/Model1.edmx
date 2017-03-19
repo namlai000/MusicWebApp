@@ -22,7 +22,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Comment" Type="text" />
+          <Property Name="Comment" Type="nvarchar(max)" />
           <Property Name="UserId" Type="int" />
           <Property Name="MusicId" Type="int" />
           <Property Name="CommentDate" Type="datetime" />
@@ -32,7 +32,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="text" />
+          <Property Name="Name" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Login">
           <Key>
@@ -64,9 +64,9 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="text" />
-          <Property Name="Address" Type="text" />
-          <Property Name="Description" Type="text" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Address" Type="nvarchar(max)" />
+          <Property Name="Description" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Singer">
           <Key>
@@ -86,11 +86,11 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FirstName" Type="text" />
-          <Property Name="LastName" Type="text" />
-          <Property Name="Phone" Type="text" />
+          <Property Name="FirstName" Type="nvarchar(max)" />
+          <Property Name="LastName" Type="nvarchar(max)" />
+          <Property Name="Phone" Type="nvarchar(max)" />
           <Property Name="Gender" Type="bit" />
-          <Property Name="Email" Type="text" />
+          <Property Name="Email" Type="nvarchar(max)" />
           <Property Name="Avatar" Type="text" />
         </EntityType>
         <Association Name="FK_Album_Genre">
@@ -304,6 +304,10 @@
             <End Role="Album" EntitySet="Albums" />
             <End Role="Music" EntitySet="Musics" />
           </AssociationSet>
+          <AssociationSet Name="FK_Comment_Music" Association="MusicModel.FK_Comment_Music">
+            <End Role="Music" EntitySet="Musics" />
+            <End Role="Comment" EntitySet="Comments" />
+          </AssociationSet>
           <AssociationSet Name="FK_Comment_User" Association="MusicModel.FK_Comment_User">
             <End Role="User" EntitySet="Users" />
             <End Role="Comment" EntitySet="Comments" />
@@ -332,10 +336,6 @@
             <End Role="Producer" EntitySet="Producers" />
             <End Role="Singer" EntitySet="Singers" />
           </AssociationSet>
-          <AssociationSet Name="FK_Comment_Music" Association="MusicModel.FK_Comment_Music">
-            <End Role="Music" EntitySet="Musics" />
-            <End Role="Comment" EntitySet="Comments" />
-          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Album">
           <Key>
@@ -357,19 +357,19 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Comment1" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Comment1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="UserId" Type="Int32" />
           <Property Name="MusicId" Type="Int32" />
           <Property Name="CommentDate" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="User" Relationship="MusicModel.FK_Comment_User" FromRole="Comment" ToRole="User" />
           <NavigationProperty Name="Music" Relationship="MusicModel.FK_Comment_Music" FromRole="Comment" ToRole="Music" />
+          <NavigationProperty Name="User" Relationship="MusicModel.FK_Comment_User" FromRole="Comment" ToRole="User" />
         </EntityType>
         <EntityType Name="Genre">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Albums" Relationship="MusicModel.FK_Album_Genre" FromRole="Genre" ToRole="Album" />
           <NavigationProperty Name="Musics" Relationship="MusicModel.FK_Music_Genre" FromRole="Genre" ToRole="Music" />
           <NavigationProperty Name="Singers" Relationship="MusicModel.FK_Singer_Genre" FromRole="Genre" ToRole="Singer" />
@@ -400,19 +400,19 @@
           <Property Name="UploadDate" Type="DateTime" Precision="3" />
           <Property Name="C_View" Type="Int32" />
           <NavigationProperty Name="Album" Relationship="MusicModel.FK_Music_Album" FromRole="Music" ToRole="Album" />
+          <NavigationProperty Name="Comments" Relationship="MusicModel.FK_Comment_Music" FromRole="Music" ToRole="Comment" />
           <NavigationProperty Name="Genre" Relationship="MusicModel.FK_Music_Genre" FromRole="Music" ToRole="Genre" />
           <NavigationProperty Name="Singer" Relationship="MusicModel.FK_Music_Singer" FromRole="Music" ToRole="Singer" />
           <NavigationProperty Name="User" Relationship="MusicModel.FK_Music_User" FromRole="Music" ToRole="User" />
-          <NavigationProperty Name="Comments" Relationship="MusicModel.FK_Comment_Music" FromRole="Music" ToRole="Comment" />
         </EntityType>
         <EntityType Name="Producer">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Singers" Relationship="MusicModel.FK_Singer_Producer" FromRole="Producer" ToRole="Singer" />
         </EntityType>
         <EntityType Name="Singer">
@@ -437,11 +437,11 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="LastName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Phone" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Gender" Type="Boolean" />
-          <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Avatar" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Comments" Relationship="MusicModel.FK_Comment_User" FromRole="User" ToRole="Comment" />
           <NavigationProperty Name="Logins" Relationship="MusicModel.FK_Login_User" FromRole="User" ToRole="Login" />
@@ -480,6 +480,18 @@
             </Principal>
             <Dependent Role="Music">
               <PropertyRef Name="AlbumId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Comment_Music">
+          <End Type="MusicModel.Music" Role="Music" Multiplicity="0..1" />
+          <End Type="MusicModel.Comment" Role="Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Music">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="MusicId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -564,18 +576,6 @@
             </Principal>
             <Dependent Role="Singer">
               <PropertyRef Name="ProducerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Comment_Music">
-          <End Type="MusicModel.Music" Role="Music" Multiplicity="0..1" />
-          <End Type="MusicModel.Comment" Role="Comment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Music">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Comment">
-              <PropertyRef Name="MusicId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
