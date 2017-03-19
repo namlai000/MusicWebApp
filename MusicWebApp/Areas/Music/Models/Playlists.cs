@@ -7,7 +7,7 @@ namespace MusicWebApp.Areas.Music.Models
 {
     public class Playlists
     {
-        public List<Track> playlist { get; set; }
+        public IEnumerable<Track> playlist { get; set; }
     }
 
     public class Track

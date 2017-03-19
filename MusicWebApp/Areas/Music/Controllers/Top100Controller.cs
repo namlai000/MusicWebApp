@@ -1,8 +1,12 @@
 ﻿using MusicWebApp.Areas.Music.Models;
 using MusicWebApp.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -26,21 +30,21 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetTop100(int genresId)
         {
-            MusicEntities en = new MusicEntities();
-
-            var gen = GenresEntities.InitialModels().FirstOrDefault(a => a.Id == genresId);
-            var test = en.Musics.Where(a => true);
-            if (gen.Id != 0)
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/top100";
+            List<MusicWebApp.Models.Music> test = null;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            using (Stream responseStream = response.GetResponseStream())
             {
-                test = test.Where(a => a.Genre.Id == gen.Id);
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                test = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
             }
 
             var start = 1;
 
             var data = test
-                .OrderByDescending(a => a.UploadDate)
                 .Take(100)
-                .ToList()
                 .Select(a => new IConvertible[]
                 {
                     start++,
@@ -48,6 +52,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                     a.Id,
                     a.Singer.Fullname,
                     a.Image,
+                    a.C_View,
                 });
 
             return Json(new { data = data }, JsonRequestBehavior.AllowGet);

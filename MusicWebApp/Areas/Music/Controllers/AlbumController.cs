@@ -31,8 +31,16 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult Album(int albumId)
         {
-            MusicEntities en = new MusicEntities();
-            var album = en.Albums.FirstOrDefault(a => a.Id == albumId);
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/album/" + albumId;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            Album album = null;
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                album = JsonConvert.DeserializeObject<Album>(json);
+            }
             if (album != null)
             {
                 BackgroundJob.Enqueue(() => Background.UpdateView((int)EnumProject.ALBUM, album.Id));
@@ -42,31 +50,27 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetTopAlbumsByGenres(JQueryDataTableParamModel param, int genresId)
         {
-            MusicEntities en = new MusicEntities();
             List<Album> test = null;
 
             string api = "http://fmusicapi.azurewebsites.net/MusicProject/album/genres/" + genresId;
             if (genresId == 0)
             {
-                test = en.Albums.Where(a => true).ToList();
+                api = "http://fmusicapi.azurewebsites.net/MusicProject/album";
             }
-            else
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            using (Stream responseStream = response.GetResponseStream())
             {
-                //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
-                //WebResponse response = request.GetResponse();
-                //using (Stream responseStream = response.GetResponseStream())
-                //{
-                //    StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-                //    var json = reader.ReadToEnd();
-                //    test = JsonConvert.DeserializeObject<List<Album>>(json);
-                //}
-                test = en.Albums.Where(a => a.Genre.Id == genresId).ToList();
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                test = JsonConvert.DeserializeObject<List<Album>>(json);
             }
 
             var c = test.Count();
             var start = param.iDisplayStart + 1;
             var data = test
-                .OrderBy(a => a.UploadDate)
+                .OrderByDescending(a => a.C_View)
                 .Skip(param.iDisplayStart)
                 .Take(param.iDisplayLength)
                 .Select(a => new IConvertible[]
@@ -76,6 +80,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                     a.Id,
                     a.Singer.Fullname,
                     a.Image,
+                    a.C_View,
                 });
 
             return Json(new
@@ -89,13 +94,21 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetRecentAlbumsByGenres(JQueryDataTableParamModel param, int genresId)
         {
-            MusicEntities en = new MusicEntities();
+            List<Album> test = null;
 
-            var gen = GenresEntities.InitialModels().FirstOrDefault(a => a.Id == genresId);
-            var test = en.Albums.Where(a => true);
-            if (gen.Id != 0)
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/album/genres/" + genresId;
+            if (genresId == 0)
             {
-                test = test.Where(a => a.Genre.Id == gen.Id);
+                api = "http://fmusicapi.azurewebsites.net/MusicProject/album";
+            }
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                test = JsonConvert.DeserializeObject<List<Album>>(json);
             }
 
             var c = test.Count();
@@ -104,7 +117,6 @@ namespace MusicWebApp.Areas.Music.Controllers
                 .OrderByDescending(a => a.UploadDate)
                 .Skip(param.iDisplayStart)
                 .Take(param.iDisplayLength)
-                .ToList()
                 .Select(a => new IConvertible[]
                 {
                     start++,
@@ -112,6 +124,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                     a.Id,
                     a.Singer.Fullname,
                     a.Image,
+                    a.C_View,
                 });
 
             return Json(new
@@ -125,13 +138,20 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetsSongsByAlbum(JQueryDataTableParamModel param, int albumId)
         {
-            MusicEntities en = new MusicEntities();
-            var test = en.Albums.FirstOrDefault(a => a.Id == albumId);
+            List<MusicWebApp.Models.Music> musics = null;
 
-            var musics = test.Musics;
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/albums/" + albumId;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                musics = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
+            }
 
             var t = param.sSearch == null ? "" : param.sSearch;
-            var searched = musics.AsEnumerable().Where(a => a.Name.ToLower().Contains(t.ToLower()));
+            var searched = musics.Where(a => a.Name.ToLower().Contains(t.ToLower()));
 
             var c = musics.Count();
             var start = param.iDisplayStart + 1;
@@ -145,6 +165,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                     a.Id,
                     a.Singer.Fullname,
                     a.Image,
+                    a.C_View,
                 });
 
             return Json(new
@@ -158,13 +179,20 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetSameAlbums(int genresId)
         {
-            MusicEntities en = new MusicEntities();
-            var genres = GenresEntities.InitialModels().FirstOrDefault(a => a.Id == genresId);
-            var data = en.Albums
-                .Where(a => a.Genre.Id == genresId)
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/album/genres/" + genresId;
+            List<Album> test = null;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                test = JsonConvert.DeserializeObject<List<Album>>(json);
+            }
+
+            var data = test
                 .OrderBy(a => Guid.NewGuid())
                 .Take(10)
-                .ToList()
                 .Select(a => new IConvertible[]
                 {
                     a.Name,

@@ -10,7 +10,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="text" />
+          <Property Name="Name" Type="nvarchar(max)" />
           <Property Name="Image" Type="text" />
           <Property Name="SingerId" Type="int" />
           <Property Name="UploadDate" Type="datetime" />
@@ -48,7 +48,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="text" />
+          <Property Name="Name" Type="nvarchar(max)" />
           <Property Name="AlbumId" Type="int" />
           <Property Name="Image" Type="text" />
           <Property Name="Link" Type="text" />
@@ -73,7 +73,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Fullname" Type="text" />
+          <Property Name="Fullname" Type="nvarchar(max)" />
           <Property Name="Birthday" Type="datetime" />
           <Property Name="ProducerId" Type="int" />
           <Property Name="Description" Type="text" />
@@ -304,10 +304,6 @@
             <End Role="Album" EntitySet="Albums" />
             <End Role="Music" EntitySet="Musics" />
           </AssociationSet>
-          <AssociationSet Name="FK_Comment_Music" Association="MusicModel.FK_Comment_Music">
-            <End Role="Music" EntitySet="Musics" />
-            <End Role="Comment" EntitySet="Comments" />
-          </AssociationSet>
           <AssociationSet Name="FK_Comment_User" Association="MusicModel.FK_Comment_User">
             <End Role="User" EntitySet="Users" />
             <End Role="Comment" EntitySet="Comments" />
@@ -336,13 +332,17 @@
             <End Role="Producer" EntitySet="Producers" />
             <End Role="Singer" EntitySet="Singers" />
           </AssociationSet>
+          <AssociationSet Name="FK_Comment_Music" Association="MusicModel.FK_Comment_Music">
+            <End Role="Music" EntitySet="Musics" />
+            <End Role="Comment" EntitySet="Comments" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Album">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Image" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="SingerId" Type="Int32" />
           <Property Name="UploadDate" Type="DateTime" Precision="3" />
@@ -361,8 +361,8 @@
           <Property Name="UserId" Type="Int32" />
           <Property Name="MusicId" Type="Int32" />
           <Property Name="CommentDate" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Music" Relationship="MusicModel.FK_Comment_Music" FromRole="Comment" ToRole="Music" />
           <NavigationProperty Name="User" Relationship="MusicModel.FK_Comment_User" FromRole="Comment" ToRole="User" />
+          <NavigationProperty Name="Music" Relationship="MusicModel.FK_Comment_Music" FromRole="Comment" ToRole="Music" />
         </EntityType>
         <EntityType Name="Genre">
           <Key>
@@ -389,7 +389,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="AlbumId" Type="Int32" />
           <Property Name="Image" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Link" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
@@ -400,10 +400,10 @@
           <Property Name="UploadDate" Type="DateTime" Precision="3" />
           <Property Name="C_View" Type="Int32" />
           <NavigationProperty Name="Album" Relationship="MusicModel.FK_Music_Album" FromRole="Music" ToRole="Album" />
-          <NavigationProperty Name="Comments" Relationship="MusicModel.FK_Comment_Music" FromRole="Music" ToRole="Comment" />
           <NavigationProperty Name="Genre" Relationship="MusicModel.FK_Music_Genre" FromRole="Music" ToRole="Genre" />
           <NavigationProperty Name="Singer" Relationship="MusicModel.FK_Music_Singer" FromRole="Music" ToRole="Singer" />
           <NavigationProperty Name="User" Relationship="MusicModel.FK_Music_User" FromRole="Music" ToRole="User" />
+          <NavigationProperty Name="Comments" Relationship="MusicModel.FK_Comment_Music" FromRole="Music" ToRole="Comment" />
         </EntityType>
         <EntityType Name="Producer">
           <Key>
@@ -420,7 +420,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Fullname" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Fullname" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Birthday" Type="DateTime" Precision="3" />
           <Property Name="ProducerId" Type="Int32" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
@@ -480,18 +480,6 @@
             </Principal>
             <Dependent Role="Music">
               <PropertyRef Name="AlbumId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Comment_Music">
-          <End Type="MusicModel.Music" Role="Music" Multiplicity="0..1" />
-          <End Type="MusicModel.Comment" Role="Comment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Music">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Comment">
-              <PropertyRef Name="MusicId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -579,7 +567,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        <Association Name="FK_Comment_Music">
+          <End Type="MusicModel.Music" Role="Music" Multiplicity="0..1" />
+          <End Type="MusicModel.Comment" Role="Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Music">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="MusicId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>

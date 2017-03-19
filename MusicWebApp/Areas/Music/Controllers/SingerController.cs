@@ -36,12 +36,21 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult SingerAbout(int singerId)
         {
-            MusicEntities en = new MusicEntities();
-            var model = en.Singers.FirstOrDefault(a => a.Id == singerId);
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/singer/" + singerId;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            Singer model = null;
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                model = JsonConvert.DeserializeObject<Singer>(json);
+            }
             if (model != null)
             {
                 BackgroundJob.Enqueue(() => Background.UpdateView((int)EnumProject.SINGER, model.Id));
             }
+
             return View(model);
         }
 
@@ -121,19 +130,30 @@ namespace MusicWebApp.Areas.Music.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetArtistsList(JQueryDataTableParamModel param, int genresId)
+        public ActionResult GetArtistsList(JQueryDataTableParamModel param, int genresId, int mode)
         {
-            MusicEntities en = new MusicEntities();
-            var test = en.Singers.Where(a => true);
-            if (genresId != 0)
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/singer/genres/" + genresId;
+            if (genresId == 0)
             {
-                test = en.Singers.Where(a => a.Genre.Id == genresId);
+                api = "http://fmusicapi.azurewebsites.net/MusicProject/singer";
+            }
+            List<Singer> test = null;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                test = JsonConvert.DeserializeObject<List<Singer>>(json);
             }
 
             var c = test.Count();
             var start = param.iDisplayStart + 1;
-            var data = test
-                .OrderBy(a => a.Id)
+
+            var data = test.OrderByDescending(a => a.C_View);
+            if (mode != 0) data = test.OrderByDescending(a => a.Id);
+               
+            var data2 = data
                 .Skip(param.iDisplayStart)
                 .Take(param.iDisplayLength)
                 .ToList()
@@ -143,6 +163,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                     a.Fullname,
                     a.Id,
                     a.Image,
+                    a.C_View,
                 });
 
             return Json(new
@@ -150,21 +171,29 @@ namespace MusicWebApp.Areas.Music.Controllers
                 sEcho = param.sEcho,
                 iTotalRecords = c,
                 iTotalDisplayRecords = c,
-                aaData = data
+                aaData = data2
             }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetArtists(int id)
         {
-            MusicEntities en = new MusicEntities();
-            var gen = GenresEntities.InitialModels().FirstOrDefault(a => a.Id == id);
-            var test = en.Singers.Where(a => true);
-            if (gen.Id != 0)
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/singer/genres/" + id;
+            if (id == 0)
             {
-                test = en.Singers.Where(a => a.Genre.Id == id);
+                api = "http://fmusicapi.azurewebsites.net/MusicProject/singer";
+            }
+            List<Singer> test = null;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                test = JsonConvert.DeserializeObject<List<Singer>>(json);
             }
 
             var data = test
+                .OrderByDescending(a => a.C_View)
                 .Take(5)
                 .ToList()
                 .Select(a => new IConvertible[]

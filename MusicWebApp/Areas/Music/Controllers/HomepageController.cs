@@ -7,6 +7,10 @@ using System.Linq;
 using MusicWebApp.Areas.Music.Models;
 using System.Web.Script.Serialization;
 using MusicWebApp.Models;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace MusicWebApp.Areas.Music.Controllers
 {
@@ -20,11 +24,19 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetTop10()
         {
-            MusicEntities en = new MusicEntities();
-            var data = en.Musics
-                .OrderByDescending(a => a.UploadDate)
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/top10";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            List<MusicWebApp.Models.Music> musics = null;
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                musics = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
+            }
+
+            var data = musics
                 .Take(10)
-                .ToList()
                 .Select(a => new IConvertible[]
                 {
                     a.Name,
@@ -38,11 +50,19 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetMostPopularMusic()
         {
-            MusicEntities en = new MusicEntities();
-            var data = en.Musics
-                .OrderByDescending(a => a.UploadDate)
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/top10";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            List<MusicWebApp.Models.Music> musics = null;
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                musics = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
+            }
+
+            var data = musics
                 .Take(4)
-                .ToList()
                 .Select(a => new IConvertible[]
                 {
                     a.Image,
@@ -55,11 +75,20 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetArtistYouMayLike()
         {
-            MusicEntities en = new MusicEntities();
-            var data = en.Singers
-                .OrderByDescending(a => a.Birthday)
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/singer";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            List<Singer> singers = null;
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                singers = JsonConvert.DeserializeObject<List<Singer>>(json);
+            }
+
+            var data = singers
+                .OrderBy(a => Guid.NewGuid())
                 .Take(10)
-                .ToList()
                 .Select(a => new IConvertible[]
                 {
                     a.Image,
@@ -72,11 +101,20 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetNewestTracks()
         {
-            MusicEntities en = new MusicEntities();
-            var data = en.Musics
-                .OrderByDescending(a => a.UploadDate.Value)
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/recent10";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            List<MusicWebApp.Models.Music> musics = null;
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                musics = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
+            }
+
+            var data = musics
+                .OrderByDescending(a => a.UploadDate)
                 .Take(10)
-                .ToList()
                 .Select(a => new IConvertible[]
                 {
                     a.Name,
@@ -90,11 +128,19 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetNewestAlbums()
         {
-            MusicEntities en = new MusicEntities();
-            var data = en.Albums
-                .OrderByDescending(a => a.UploadDate)
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/album/recent10";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            List<Album> albums = null;
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                albums = JsonConvert.DeserializeObject<List<Album>>(json);
+            }
+
+            var data = albums
                 .Take(10)
-                .ToList()
                 .Select(a => new IConvertible[]
                 {
                     a.Name,

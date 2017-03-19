@@ -84,12 +84,14 @@
                         var link = row[2];
                         var singer = row[3];
                         var image = row[4];
+                        var view = row[5];
                         var display = "" +
                             "<div class='row'>" +
                                 "<div class='col-md-4'>" +
                                     "<img src='" + image + "' class='img-responsive' />" +
                                 "</div>" +
                                 "<div class='col-md-8'>" +
+                                    "<span class='pull-right' style='padding-right:16px'><i class='glyphicon glyphicon-eye-open'></i> " + view + "</span>" +
                                     "<b><a href='@Url.Action("Index", "PlayMusic")/?musicid=" + link + "'>" + track + "</a></b><br/>" +
                                     singer +
                                 "</div>" +

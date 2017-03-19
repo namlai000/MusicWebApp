@@ -2,9 +2,13 @@
 using MusicWebApp.Areas.Music.Models;
 using MusicWebApp.Controllers;
 using MusicWebApp.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -15,12 +19,21 @@ namespace MusicWebApp.Areas.Music.Controllers
         // GET: Music/PlayMusic
         public ActionResult Index(int musicid)
         {
-            MusicEntities en = new MusicEntities();
-            var model = en.Musics.FirstOrDefault(a => a.Id == musicid);
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/" + musicid;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            MusicWebApp.Models.Music model = null;
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                model = JsonConvert.DeserializeObject<MusicWebApp.Models.Music>(json);
+            }
             if (model != null)
             {
                 BackgroundJob.Enqueue(() => Background.UpdateView((int)EnumProject.MUSIC, model.Id));
             }
+
             return View(model);
         }
 
@@ -33,16 +46,26 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult LoadAlbumSong(int albumId)
         {
-            MusicEntities en = new MusicEntities();
-            var musics = en.Albums.FirstOrDefault(a => a.Id == albumId).Musics;
-            var track = musics.Select(a => new Track
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject//music/albums/" + albumId;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            List<MusicWebApp.Models.Music> model = null;
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                model = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
+            }
+
+            var track = model.Select(a => new Track
             {
                 file = a.Link,
                 thumb = a.Image,
                 trackName = a.Name,
                 trackArtist = a.Singer.Fullname,
                 trackAlbum = "Single",
-            }).ToList();
+            });
+
             Playlists list = new Playlists
             {
                 playlist = track,
@@ -106,13 +129,21 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetSameSongs(int genresId)
         {
-            MusicEntities en = new MusicEntities();
-            var genres = GenresEntities.InitialModels().FirstOrDefault(a => a.Id == genresId);
-            var data = en.Musics
-                .Where(a => a.Genre.Id == genresId)
+            List<MusicWebApp.Models.Music> test = null;
+
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/genres/" + genresId;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                test = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
+            }
+
+            var data = test
                 .OrderBy(a => Guid.NewGuid())
                 .Take(10)
-                .ToList()
                 .Select(a => new IConvertible[]
                 {
                     a.Name,

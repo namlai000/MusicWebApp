@@ -22,7 +22,7 @@ namespace MusicWebApp.Models
         public Nullable<int> MusicId { get; set; }
         public Nullable<System.DateTime> CommentDate { get; set; }
     
-        public virtual Music Music { get; set; }
         public virtual User User { get; set; }
+        public virtual Music Music { get; set; }
     }
 }

@@ -31,25 +31,22 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetGenresMostRecentSongs(JQueryDataTableParamModel param, int genresId)
         {
-            MusicEntities en = new MusicEntities();
+
             List<MusicWebApp.Models.Music> test = null;
 
             string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/genres/" + genresId;
             if (genresId == 0)
             {
-                var gen = GenresEntities.InitialModels().FirstOrDefault(a => a.Id == genresId);
-                test = en.Musics.Where(a => true).ToList();
+                api = "http://fmusicapi.azurewebsites.net/MusicProject/music";
             }
-            else
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            using (Stream responseStream = response.GetResponseStream())
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
-                WebResponse response = request.GetResponse();
-                using (Stream responseStream = response.GetResponseStream())
-                {
-                    StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-                    var json = reader.ReadToEnd();
-                    test = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
-                }
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                test = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
             }
 
             var c = test.Count();
@@ -65,6 +62,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                     a.Id,
                     a.Singer.Fullname,
                     a.Image,
+                    a.C_View,
                 });
 
             return Json(new
@@ -78,31 +76,27 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetGenresMostPopularSongs(JQueryDataTableParamModel param, int genresId)
         {
-            MusicEntities en = new MusicEntities();
             List<MusicWebApp.Models.Music> test = null;
-
 
             string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/genres/" + genresId;
             if (genresId == 0)
             {
-                var gen = GenresEntities.InitialModels().FirstOrDefault(a => a.Id == genresId);
-                test = en.Musics.Where(a => true).ToList();
-            } else
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
-                WebResponse response = request.GetResponse();
-                using (Stream responseStream = response.GetResponseStream())
-                {
-                    StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-                    var json = reader.ReadToEnd();
-                   test = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
-                }
+                api = "http://fmusicapi.azurewebsites.net/MusicProject/music";
             }
-            
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                test = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
+            }
+
             var c = test.Count();
             var start = param.iDisplayStart + 1;
             var data = test
-                .OrderBy(a => a.UploadDate)
+                .OrderByDescending(a => a.C_View)
                 .Skip(param.iDisplayStart)
                 .Take(param.iDisplayLength)
                 .Select(a => new IConvertible[]
@@ -112,6 +106,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                     a.Id,
                     a.Singer == null ? "" : a.Singer.Fullname,
                     a.Image,
+                    a.C_View,
                 });
 
 
@@ -126,26 +121,21 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetRandomSongs(int genresId)
         {
-            MusicEntities en = new MusicEntities();
             List<MusicWebApp.Models.Music> test = null;
-
 
             string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/genres/" + genresId;
             if (genresId == 0)
             {
-                var gen = GenresEntities.InitialModels().FirstOrDefault(a => a.Id == genresId);
-                test = en.Musics.Where(a => true).ToList();
+                api = "http://fmusicapi.azurewebsites.net/MusicProject/music";
             }
-            else
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            using (Stream responseStream = response.GetResponseStream())
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
-                WebResponse response = request.GetResponse();
-                using (Stream responseStream = response.GetResponseStream())
-                {
-                    StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-                    var json = reader.ReadToEnd();
-                    test = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
-                }
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                test = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
             }
 
             var data = test

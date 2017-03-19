@@ -37,11 +37,27 @@
             <div class="row">
                 <div class="col-md-12">
                     <h2>@Model.genre.Name</h2>
-                    <table class="table-hover table-responsive" id="artists">
-                        <tr>
-                            <td></td>
-                        </tr>
-                    </table>
+                    <hr />
+                    <ul class="nav nav-pills">
+                        <li class="active"><a href="#top" data-toggle="tab">Top Aritists</a></li>
+                        <li><a href="#recent" data-toggle="tab">Recent Artists</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="top">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <table class="table-hover table-responsive" id="artists"></table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="recent">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <table class="table-hover table-responsive" id="artistsRecent"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -54,10 +70,11 @@
         $.fn.dataTableExt.oStdClasses.sPageButtonActive = "btn-raised";
 
         LoadArtists();
+        LoadArtistsRecent();
     });
 
-    function LoadArtists() {
-        $("#artists").dataTable({
+    function LoadArtistsRecent() {
+        $("#artistsRecent").dataTable({
             "bFilter": false,
             "bLengthChange": false,
             "bServerSide": true,
@@ -67,7 +84,8 @@
             "sAjaxSource": "@Url.Action("GetArtistsList", "Singer")",
             "fnServerParams": function (aoData) {
                 aoData.push(
-                    { "name": "genresId", "value": @Model.genre.Id }
+                    { "name": "genresId", "value": @Model.genre.Id },
+                     { "name": "mode", "value": 1 }
                 );
             },
             "oLanguage": {
@@ -92,12 +110,14 @@
                         var singer = row[1];
                         var link = row[2];
                         var image = row[3];
+                        var view = row[4];
                         var display = "" +
                             "<div class='row'>" +
                                 "<div class='col-md-2'>" +
                                     "<img src='" + image + "' class='img-responsive' />" +
                                 "</div>" +
                                 "<div class='col-md-10'>" +
+                                    "<span class='pull-right' style='padding-right:16px'><i class='glyphicon glyphicon-eye-open'></i> " + view + "</span>" +
                                     "<b><a href='@Url.Action("SingerAbout", "Singer")/?singerId=" + link + "'>" + singer + "</a></b><br/>" +
                                 "</div>" +
                             "</div>";
@@ -107,7 +127,64 @@
                 },
             ],
             "bAutoWidth": false,
-            });
+        });
+    }
+
+    function LoadArtists() {
+        $("#artists").dataTable({
+            "bFilter": false,
+            "bLengthChange": false,
+            "bServerSide": true,
+            "bProcessing": true,
+            "bInfo": false,
+            "iDisplayLength": 40,
+            "sAjaxSource": "@Url.Action("GetArtistsList", "Singer")",
+            "fnServerParams": function (aoData) {
+                aoData.push(
+                    { "name": "genresId", "value": @Model.genre.Id },
+                     { "name": "mode", "value": 0 }
+                );
+            },
+            "oLanguage": {
+                "oPaginate": {
+                    "sInfo": "",
+                    "sNext": "<i class='glyphicon glyphicon-step-forward'></i>",
+                    "sPrevious": "<i class='glyphicon glyphicon-step-backward'></i>"
+                }
+            },
+            "aoColumnDefs": [
+               {
+                   "aTargets": [0],
+                   "mRender": function (data, type, row)  {
+                       return "<h3>" + row[0] + "</h3>";
+                   },
+                   "bSortable": false,
+                   "className": "text-center",
+               },
+                {
+                    "aTargets": [1],
+                    "mRender": function (data, type, row) {
+                        var singer = row[1];
+                        var link = row[2];
+                        var image = row[3];
+                        var view = row[4];
+                        var display = "" +
+                            "<div class='row'>" +
+                                "<div class='col-md-2'>" +
+                                    "<img src='" + image + "' class='img-responsive' />" +
+                                "</div>" +
+                                "<div class='col-md-10'>" +
+                                    "<span class='pull-right' style='padding-right:16px'><i class='glyphicon glyphicon-eye-open'></i> " + view + "</span>" +
+                                    "<b><a href='@Url.Action("SingerAbout", "Singer")/?singerId=" + link + "'>" + singer + "</a></b><br/>" +
+                                "</div>" +
+                            "</div>";
+                        return display;
+                    },
+                    "bSortable": false,
+                },
+            ],
+            "bAutoWidth": false,
+        });
     }
 </script>
 
