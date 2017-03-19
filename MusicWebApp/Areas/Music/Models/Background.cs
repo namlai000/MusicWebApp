@@ -1,7 +1,9 @@
 ﻿using MusicWebApp.Controllers;
 using MusicWebApp.Models;
+using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.SessionState;
 
 namespace MusicWebApp.Areas.Music.Models
@@ -64,10 +66,16 @@ namespace MusicWebApp.Areas.Music.Models
             }
         }
 
-        public static void ResetViewEachWeek()
+        public static async Task ResetViewEachWeek()
         {
-            //MusicEntities en = new MusicEntities();
-            Debug.WriteLine("VIEWS: Resetted");
+            MusicEntities en = new MusicEntities();
+            string sql1 = "UPDATE Music SET _View = 0";
+            string sql2 = "UPDATE Album SET _View = 0";
+            string sql3 = "UPDATE Singer SET _View = 0";
+            await en.Database.ExecuteSqlCommandAsync(sql1);
+            await en.Database.ExecuteSqlCommandAsync(sql2);
+            await en.Database.ExecuteSqlCommandAsync(sql3);
+            en.SaveChanges();
         }
     }
 }

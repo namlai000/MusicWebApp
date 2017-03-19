@@ -72,7 +72,7 @@ namespace MusicWebApp
                 AuthorizationFilters = new[] { new HangfireAuthorization() }
             });
             app.UseHangfireServer();
-            RecurringJob.AddOrUpdate(() => Background.ResetViewEachWeek(), Cron.Minutely);
+            RecurringJob.AddOrUpdate(() => Background.ResetViewEachWeek(), Cron.Weekly);
         }
     }
 }
