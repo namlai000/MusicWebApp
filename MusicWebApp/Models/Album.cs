@@ -9,9 +9,10 @@
 
 namespace MusicWebApp.Models
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    
+
     public partial class Album
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -26,6 +27,8 @@ namespace MusicWebApp.Models
         public Nullable<int> SingerId { get; set; }
         public Nullable<System.DateTime> UploadDate { get; set; }
         public Nullable<int> GenresId { get; set; }
+        [JsonProperty("View")]
+        public Nullable<int> C_View { get; set; }
     
         public virtual Genre Genre { get; set; }
         public virtual Singer Singer { get; set; }

@@ -9,9 +9,10 @@
 
 namespace MusicWebApp.Models
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    
+
     public partial class Singer
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -28,6 +29,8 @@ namespace MusicWebApp.Models
         public string Description { get; set; }
         public string Image { get; set; }
         public Nullable<int> GenresId { get; set; }
+        [JsonProperty("View")]
+        public Nullable<int> C_View { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Album> Albums { get; set; }

@@ -1,46 +1,29 @@
 ﻿@model MusicWebApp.Areas.Music.Models.RegisterUserViewModel
 
 @{
-    ViewBag.Title = "Signup";
+    ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="col-md-12">
     <form id="form">
         <div class="row container">
-            <h3>Signup</h3>
+            <h3>Edit</h3>
             <hr />
-            <div class="col-md-12">
-                <div class="form-horizontal">
-                    <div class="form-group">
-                        @Html.LabelFor(a => a.Username, new { @class = "col-md-2 control-label" })
-                        <div class="col-md-10">
-                            @Html.TextBoxFor(a => a.Username, new { @class = "form-control" })
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        @Html.LabelFor(a => a.Password, new { @class = "col-md-2 control-label" })
-                        <div class="col-md-10">
-                            @Html.PasswordFor(a => a.Password, new { @class = "form-control" })
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        @Html.LabelFor(a => a.Email, new { @class = "col-md-2 control-label" })
-                        <div class="col-md-10">
-                            @Html.TextBoxFor(a => a.Email, new { @class = "form-control" })
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="row container">
-            <h4>Additional info</h4>
             <hr />
             <div class="col-md-12">
                 <div class="form-group">
+                    @Html.LabelFor(a => a.Email, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(a => a.Email, Model.Email, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
                     <div class="row">
                         <div class="col-md-3">
-                            <img src="https://placeholdit.imgix.net/~text?txtsize=28&txt=300%C3%97300&w=300&h=300" id="preview" width="200" height="200" />
+                            <img src="@Model.LinkImage" id="preview" width="200" height="200" />
                         </div>
                         <div class="col-md-9">
                             <label for="image" class="col-md-2 control-label">Avatar</label>
@@ -54,32 +37,35 @@
                 <div class="form-group">
                     @Html.LabelFor(a => a.Firstname, new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
-                        @Html.TextBoxFor(a => a.Firstname, new { @class = "form-control" })
+                        @Html.TextBoxFor(a => a.Firstname, Model.Firstname, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(a => a.Lastname, new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
-                        @Html.TextBoxFor(a => a.Lastname, new { @class = "form-control" })
+                        @Html.TextBoxFor(a => a.Lastname, Model.Lastname, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(a => a.Phone, new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
-                        @Html.TextBoxFor(a => a.Phone, new { @class = "form-control" })
+                        @Html.TextBoxFor(a => a.Phone, Model.Phone, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(a => a.Gender, new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
-                        @Html.CheckBoxFor(a => a.Gender, new { @class = "form-control" })
+                        @Html.CheckBoxFor(a => a.Gender, new { @class = "form-control", @checked = (Model.Gender ? "checked" : "") })
                     </div>
                 </div>
             </div>
         </div>
+
+        @Html.HiddenFor(a => a.Id)
+
         <div class="row container">
             <button type="reset" class="btn btn-default btn-raised">Reset</button>
-            <button type="button" class="btn btn-primary btn-raised" onclick="Submit()" id="btnSignup">Signup</button>
+            <button type="button" class="btn btn-primary btn-raised" onclick="Submit()" id="btnSignup">Save Changes</button>
             <div id="message" style="display:none">Uploading Avatar ... (0%)</div>
         </div>
     </form>
@@ -116,14 +102,8 @@
     }
 
     function Submit() {
-        if ($('#Username').val() == '') {
-            sweetAlert("Failed!", "Username can't be blank", "error");
-        } else if ($('#Password').val() == '') {
-            sweetAlert("Failed!", "Password can't be blank", "error");
-        } else if ($('#Email').val() == '') {
+        if ($('#Email').val() == '') {
             sweetAlert("Failed!", "Email can't be blank", "error");
-        } else if ($('#image').val() == '') {
-            sweetAlert("Failed!", "Image can't be blank", "error");
         } else if ($('#Firstname').val() == '') {
             sweetAlert("Failed!", "Firstname can't be blank", "error");
         } else if ($('#Lastname').val() == '') {
@@ -139,14 +119,14 @@
 
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("Signup", "Auth")",
+                url: "@Url.Action("Edit", "Auth")",
                 data: formData,
                 processData: false,
                 contentType: false,
                 cache: false,
                 success: function (result) {
                     if (result.success) {
-                        sweetAlert("Done!", "Register success", "success");
+                        sweetAlert("Done!", "Save changes success", "success");
                         window.location.href = '@Url.Action("Login", "Auth")';
                     } else {
                         sweetAlert("Failed!", result.message, "error");

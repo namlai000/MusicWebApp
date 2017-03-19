@@ -6,6 +6,8 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using MusicWebApp.Models;
+using Hangfire;
+using MusicWebApp.Areas.Music.Models;
 
 namespace MusicWebApp
 {
@@ -63,6 +65,14 @@ namespace MusicWebApp
             //    ClientId = "",
             //    ClientSecret = ""
             //});
+
+            GlobalConfiguration.Configuration.UseSqlServerStorage("DefaultConnection");
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                AuthorizationFilters = new[] { new HangfireAuthorization() }
+            });
+            app.UseHangfireServer();
+            RecurringJob.AddOrUpdate(() => Background.ResetViewEachWeek(), Cron.Weekly);
         }
     }
 }

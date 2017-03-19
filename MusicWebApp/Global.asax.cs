@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Hangfire;
+using MusicWebApp.Areas.Music.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -19,6 +21,10 @@ namespace MusicWebApp
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
+        protected void Session_Start(Object sender, EventArgs e)
+        {
+            Background.Session = HttpContext.Current.Session;
+        }
 
         protected void Application_PostAuthenticateRequest(Object sender, EventArgs e)
         {

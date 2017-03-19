@@ -9,18 +9,20 @@
 
 namespace MusicWebApp.Models
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    
+
     public partial class Comment
     {
         public int Id { get; set; }
+        [JsonProperty("Comment")]
         public string Comment1 { get; set; }
         public Nullable<int> UserId { get; set; }
         public Nullable<int> MusicId { get; set; }
         public Nullable<System.DateTime> CommentDate { get; set; }
     
-        public virtual Music Music { get; set; }
         public virtual User User { get; set; }
+        public virtual Music Music { get; set; }
     }
 }

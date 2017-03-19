@@ -48,16 +48,14 @@
                             <div class="tab-pane active" id="top">
                                 <div class="form-group">
                                     <div class="col-md-12">
-                                        <table id="mostPop" class="table-hover table-responsive">
-                                        </table>
+                                        <table id="mostPop" class="table-hover table-responsive"></table>
                                     </div>
                                 </div>
                             </div>
                             <div class="tab-pane" id="recent">
                                 <div class="form-group">
                                     <div class="col-md-12">
-                                        <table id="mostRecent" class="table-hover table-responsive">
-                                        </table>
+                                        <table id="mostRecent" class="table-hover table-responsive"></table>
                                     </div>
                                 </div>
                             </div>
@@ -117,6 +115,7 @@
                         var link = row[2];
                         var singer = row[3];
                         var image = row[4];
+                        var view = row[5];
                         var display = "" +
                             "<div class='row'>" +
                                 "<div class='col-md-2'>" +
@@ -124,7 +123,11 @@
                                 "</div>" +
                                 "<div class='col-md-10'>" +
                                     "<b><a href='@Url.Action("Album", "Album")?albumId=" + link + "'>" + track + "</a></b>" +
-                                    "<a href='@Url.Action("Album", "PlayMusic")?albumId=" + link + "' class='btn btn-default pull-right' data-toggle='tooltip' data-placement='top' title='Listen to this album'><i class='glyphicon glyphicon-music'></i></a><br/>" +
+                                    "<div class='pull-right'>" +
+                                        "<span><i class='glyphicon glyphicon-eye-open'></i> " + view + "</span>" +
+                                        "<a href='@Url.Action("Album", "PlayMusic")?albumId=" + link + "' class='btn btn-default' data-toggle='tooltip' data-placement='bottom' title='Listen to this album'><i class='glyphicon glyphicon-music'></i></a>" +
+                                    "</div>" +
+                                    "<br/>" +
                                     singer +
                                 "</div>" +
                             "</div>";
@@ -134,7 +137,7 @@
                 },
             ],
             "bAutoWidth": false,
-            });
+        });
     }
 
     function LoadTopAlbums() {
@@ -174,6 +177,7 @@
                         var link = row[2];
                         var singer = row[3];
                         var image = row[4];
+                        var view = row[5];
                         var display = "" +
                             "<div class='row'>" +
                                 "<div class='col-md-2'>" +
@@ -181,7 +185,11 @@
                                 "</div>" +
                                 "<div class='col-md-10'>" +
                                     "<b><a href='@Url.Action("Album", "Album")?albumId=" + link + "'>" + track + "</a></b>" +
-                                    "<a href='@Url.Action("Album", "PlayMusic")?albumId=" + link + "' class='btn btn-default pull-right' data-toggle='tooltip' data-placement='bottom' title='Listen to this album'><i class='glyphicon glyphicon-music'></i></a><br/>" +
+                                    "<div class='pull-right'>" +
+                                        "<span><i class='glyphicon glyphicon-eye-open'></i> " + view + "</span>" +
+                                        "<a href='@Url.Action("Album", "PlayMusic")?albumId=" + link + "' class='btn btn-default' data-toggle='tooltip' data-placement='bottom' title='Listen to this album'><i class='glyphicon glyphicon-music'></i></a>" +
+                                    "</div>" +
+                                    "<br/>" +
                                     singer +
                                 "</div>" +
                             "</div>";
@@ -191,6 +199,6 @@
                 },
             ],
             "bAutoWidth": false,
-            });
+        });
     }
 </script>

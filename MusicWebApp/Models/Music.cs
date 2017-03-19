@@ -9,9 +9,10 @@
 
 namespace MusicWebApp.Models
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    
+
     public partial class Music
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -30,12 +31,14 @@ namespace MusicWebApp.Models
         public Nullable<int> GenresId { get; set; }
         public Nullable<bool> Pending { get; set; }
         public Nullable<System.DateTime> UploadDate { get; set; }
+        [JsonProperty("View")]
+        public Nullable<int> C_View { get; set; }
     
         public virtual Album Album { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Comment> Comments { get; set; }
         public virtual Genre Genre { get; set; }
         public virtual Singer Singer { get; set; }
         public virtual User User { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }
