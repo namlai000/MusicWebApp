@@ -206,8 +206,10 @@
     <Compile Include="Areas\Music\Models\Playlists.cs" />
     <Compile Include="Areas\Music\Models\ProgressHub.cs" />
     <Compile Include="Areas\Music\Models\RegisterUserViewModel.cs" />
+    <Compile Include="Areas\Music\Models\View.cs" />
     <Compile Include="Areas\Music\MusicAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\EnumProject.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">

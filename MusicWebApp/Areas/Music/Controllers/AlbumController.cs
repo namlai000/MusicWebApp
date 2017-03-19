@@ -1,4 +1,6 @@
-﻿using MusicWebApp.Areas.Music.Models;
+﻿using Hangfire;
+using MusicWebApp.Areas.Music.Models;
+using MusicWebApp.Controllers;
 using MusicWebApp.Models;
 using Newtonsoft.Json;
 using System;
@@ -31,6 +33,10 @@ namespace MusicWebApp.Areas.Music.Controllers
         {
             MusicEntities en = new MusicEntities();
             var album = en.Albums.FirstOrDefault(a => a.Id == albumId);
+            if (album != null)
+            {
+                BackgroundJob.Enqueue(() => Background.UpdateView((int)EnumProject.ALBUM, album.Id));
+            }
             return View(album);
         }
 
