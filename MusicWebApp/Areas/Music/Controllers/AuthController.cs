@@ -20,6 +20,7 @@ namespace MusicWebApp.Areas.Music.Controllers
             return RedirectToAction("Index", "Homepage");
         }
 
+        [Authorize]
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
@@ -30,6 +31,65 @@ namespace MusicWebApp.Areas.Music.Controllers
         {
             var user = new RegisterUserViewModel();
             return View(user);
+        }
+
+        [Authorize]
+        public ActionResult Edit(int userId)
+        {
+            var entities = new MusicEntities();
+            var data = entities.Users.FirstOrDefault(a => a.Id == userId);
+            var user = new RegisterUserViewModel
+            {
+                Email = data.Email,
+                Gender = data.Gender.Value,
+                Firstname = data.FirstName,
+                Lastname = data.LastName,
+                Id = data.Id,
+                Phone = data.Phone,
+                LinkImage = data.Avatar,
+            };
+            return View(user);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<ActionResult> Edit(RegisterUserViewModel model)
+        {
+            MusicEntities en = new MusicEntities();
+
+            try
+            {
+                string storageUrl = "musicproject-9f3c5.appspot.com";
+                string date = DateTime.Now.ToString("yyyyMMddHHmmssffff");
+
+                string imageUrl = null;
+                if (model.ImageBase != null)
+                {
+                    var stream2 = model.ImageBase.InputStream;
+                    var task2 = new FirebaseStorage(storageUrl)
+                        .Child("MusicProject")
+                        .Child("Images")
+                        .Child(date + "-" + model.ImageBase.FileName)
+                        .PutAsync(stream2);
+                    task2.Progress.ProgressChanged += (s, e) => ProgressHub.SendMessage("Uploading User Avatar ... (" + Math.Round((e.Position * 1.0 / e.Length * 100), 0) + "%)");
+                    imageUrl = await task2;
+                }
+
+                var user = en.Users.FirstOrDefault(a => a.Id == model.Id);
+                user.Avatar = string.IsNullOrEmpty(imageUrl) ? user.Avatar : imageUrl;
+                user.FirstName = model.Firstname;
+                user.LastName = model.Lastname;
+                user.Phone = model.Phone;
+                user.Gender = model.Gender;
+                user.Email = model.Email;
+                en.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+
+            return Json(new { success = true });
         }
 
         [HttpPost]

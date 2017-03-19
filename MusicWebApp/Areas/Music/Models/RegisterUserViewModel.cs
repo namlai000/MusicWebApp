@@ -23,5 +23,6 @@ namespace MusicWebApp.Areas.Music.Models
         
         // Image
         public HttpPostedFileBase ImageBase { get; set; }
+        public string LinkImage { get; set; }
     }
 }

@@ -26,6 +26,7 @@ namespace MusicWebApp.Models
         public Nullable<int> SingerId { get; set; }
         public Nullable<System.DateTime> UploadDate { get; set; }
         public Nullable<int> GenresId { get; set; }
+        public Nullable<int> C_View { get; set; }
     
         public virtual Genre Genre { get; set; }
         public virtual Singer Singer { get; set; }

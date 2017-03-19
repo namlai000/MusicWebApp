@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="MusicModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="MusicModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Album">
           <Key>
             <PropertyRef Name="Id" />
@@ -15,6 +15,7 @@
           <Property Name="SingerId" Type="int" />
           <Property Name="UploadDate" Type="datetime" />
           <Property Name="GenresId" Type="int" />
+          <Property Name="_View" Type="int" />
         </EntityType>
         <EntityType Name="Comment">
           <Key>
@@ -56,6 +57,7 @@
           <Property Name="GenresId" Type="int" />
           <Property Name="Pending" Type="bit" />
           <Property Name="UploadDate" Type="datetime" />
+          <Property Name="_View" Type="int" />
         </EntityType>
         <EntityType Name="Producer">
           <Key>
@@ -77,6 +79,7 @@
           <Property Name="Description" Type="text" />
           <Property Name="Image" Type="text" />
           <Property Name="GenresId" Type="int" />
+          <Property Name="_View" Type="int" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -276,11 +279,64 @@
             <End Role="Singer" EntitySet="Singer" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MusicModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="MusicEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Albums" EntityType="MusicModel.Album" />
+          <EntitySet Name="Comments" EntityType="MusicModel.Comment" />
+          <EntitySet Name="Genres" EntityType="MusicModel.Genre" />
+          <EntitySet Name="Logins" EntityType="MusicModel.Login" />
+          <EntitySet Name="Musics" EntityType="MusicModel.Music" />
+          <EntitySet Name="Producers" EntityType="MusicModel.Producer" />
+          <EntitySet Name="Singers" EntityType="MusicModel.Singer" />
+          <EntitySet Name="Users" EntityType="MusicModel.User" />
+          <AssociationSet Name="FK_Album_Genre" Association="MusicModel.FK_Album_Genre">
+            <End Role="Genre" EntitySet="Genres" />
+            <End Role="Album" EntitySet="Albums" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Album_Singer" Association="MusicModel.FK_Album_Singer">
+            <End Role="Singer" EntitySet="Singers" />
+            <End Role="Album" EntitySet="Albums" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Music_Album" Association="MusicModel.FK_Music_Album">
+            <End Role="Album" EntitySet="Albums" />
+            <End Role="Music" EntitySet="Musics" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Comment_Music" Association="MusicModel.FK_Comment_Music">
+            <End Role="Music" EntitySet="Musics" />
+            <End Role="Comment" EntitySet="Comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Comment_User" Association="MusicModel.FK_Comment_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Comment" EntitySet="Comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Music_Genre" Association="MusicModel.FK_Music_Genre">
+            <End Role="Genre" EntitySet="Genres" />
+            <End Role="Music" EntitySet="Musics" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Singer_Genre" Association="MusicModel.FK_Singer_Genre">
+            <End Role="Genre" EntitySet="Genres" />
+            <End Role="Singer" EntitySet="Singers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Login_User" Association="MusicModel.FK_Login_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Login" EntitySet="Logins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Music_Singer" Association="MusicModel.FK_Music_Singer">
+            <End Role="Singer" EntitySet="Singers" />
+            <End Role="Music" EntitySet="Musics" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Music_User" Association="MusicModel.FK_Music_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Music" EntitySet="Musics" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Singer_Producer" Association="MusicModel.FK_Singer_Producer">
+            <End Role="Producer" EntitySet="Producers" />
+            <End Role="Singer" EntitySet="Singers" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="Album">
           <Key>
             <PropertyRef Name="Id" />
@@ -291,9 +347,10 @@
           <Property Name="SingerId" Type="Int32" />
           <Property Name="UploadDate" Type="DateTime" Precision="3" />
           <Property Name="GenresId" Type="Int32" />
-          <NavigationProperty Name="Genre" Relationship="Self.FK_Album_Genre" FromRole="Album" ToRole="Genre" />
-          <NavigationProperty Name="Singer" Relationship="Self.FK_Album_Singer" FromRole="Album" ToRole="Singer" />
-          <NavigationProperty Name="Musics" Relationship="Self.FK_Music_Album" FromRole="Album" ToRole="Music" />
+          <Property Name="C_View" Type="Int32" />
+          <NavigationProperty Name="Genre" Relationship="MusicModel.FK_Album_Genre" FromRole="Album" ToRole="Genre" />
+          <NavigationProperty Name="Singer" Relationship="MusicModel.FK_Album_Singer" FromRole="Album" ToRole="Singer" />
+          <NavigationProperty Name="Musics" Relationship="MusicModel.FK_Music_Album" FromRole="Album" ToRole="Music" />
         </EntityType>
         <EntityType Name="Comment">
           <Key>
@@ -304,8 +361,8 @@
           <Property Name="UserId" Type="Int32" />
           <Property Name="MusicId" Type="Int32" />
           <Property Name="CommentDate" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Music" Relationship="Self.FK_Comment_Music" FromRole="Comment" ToRole="Music" />
-          <NavigationProperty Name="User" Relationship="Self.FK_Comment_User" FromRole="Comment" ToRole="User" />
+          <NavigationProperty Name="Music" Relationship="MusicModel.FK_Comment_Music" FromRole="Comment" ToRole="Music" />
+          <NavigationProperty Name="User" Relationship="MusicModel.FK_Comment_User" FromRole="Comment" ToRole="User" />
         </EntityType>
         <EntityType Name="Genre">
           <Key>
@@ -313,9 +370,9 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Albums" Relationship="Self.FK_Album_Genre" FromRole="Genre" ToRole="Album" />
-          <NavigationProperty Name="Musics" Relationship="Self.FK_Music_Genre" FromRole="Genre" ToRole="Music" />
-          <NavigationProperty Name="Singers" Relationship="Self.FK_Singer_Genre" FromRole="Genre" ToRole="Singer" />
+          <NavigationProperty Name="Albums" Relationship="MusicModel.FK_Album_Genre" FromRole="Genre" ToRole="Album" />
+          <NavigationProperty Name="Musics" Relationship="MusicModel.FK_Music_Genre" FromRole="Genre" ToRole="Music" />
+          <NavigationProperty Name="Singers" Relationship="MusicModel.FK_Singer_Genre" FromRole="Genre" ToRole="Singer" />
         </EntityType>
         <EntityType Name="Login">
           <Key>
@@ -325,7 +382,7 @@
           <Property Name="UserId" Type="Int32" />
           <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="User" Relationship="Self.FK_Login_User" FromRole="Login" ToRole="User" />
+          <NavigationProperty Name="User" Relationship="MusicModel.FK_Login_User" FromRole="Login" ToRole="User" />
         </EntityType>
         <EntityType Name="Music">
           <Key>
@@ -341,11 +398,12 @@
           <Property Name="GenresId" Type="Int32" />
           <Property Name="Pending" Type="Boolean" />
           <Property Name="UploadDate" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Album" Relationship="Self.FK_Music_Album" FromRole="Music" ToRole="Album" />
-          <NavigationProperty Name="Comments" Relationship="Self.FK_Comment_Music" FromRole="Music" ToRole="Comment" />
-          <NavigationProperty Name="Genre" Relationship="Self.FK_Music_Genre" FromRole="Music" ToRole="Genre" />
-          <NavigationProperty Name="Singer" Relationship="Self.FK_Music_Singer" FromRole="Music" ToRole="Singer" />
-          <NavigationProperty Name="User" Relationship="Self.FK_Music_User" FromRole="Music" ToRole="User" />
+          <Property Name="C_View" Type="Int32" />
+          <NavigationProperty Name="Album" Relationship="MusicModel.FK_Music_Album" FromRole="Music" ToRole="Album" />
+          <NavigationProperty Name="Comments" Relationship="MusicModel.FK_Comment_Music" FromRole="Music" ToRole="Comment" />
+          <NavigationProperty Name="Genre" Relationship="MusicModel.FK_Music_Genre" FromRole="Music" ToRole="Genre" />
+          <NavigationProperty Name="Singer" Relationship="MusicModel.FK_Music_Singer" FromRole="Music" ToRole="Singer" />
+          <NavigationProperty Name="User" Relationship="MusicModel.FK_Music_User" FromRole="Music" ToRole="User" />
         </EntityType>
         <EntityType Name="Producer">
           <Key>
@@ -355,7 +413,7 @@
           <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Singers" Relationship="Self.FK_Singer_Producer" FromRole="Producer" ToRole="Singer" />
+          <NavigationProperty Name="Singers" Relationship="MusicModel.FK_Singer_Producer" FromRole="Producer" ToRole="Singer" />
         </EntityType>
         <EntityType Name="Singer">
           <Key>
@@ -368,10 +426,11 @@
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Image" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="GenresId" Type="Int32" />
-          <NavigationProperty Name="Albums" Relationship="Self.FK_Album_Singer" FromRole="Singer" ToRole="Album" />
-          <NavigationProperty Name="Genre" Relationship="Self.FK_Singer_Genre" FromRole="Singer" ToRole="Genre" />
-          <NavigationProperty Name="Musics" Relationship="Self.FK_Music_Singer" FromRole="Singer" ToRole="Music" />
-          <NavigationProperty Name="Producer" Relationship="Self.FK_Singer_Producer" FromRole="Singer" ToRole="Producer" />
+          <Property Name="C_View" Type="Int32" />
+          <NavigationProperty Name="Albums" Relationship="MusicModel.FK_Album_Singer" FromRole="Singer" ToRole="Album" />
+          <NavigationProperty Name="Genre" Relationship="MusicModel.FK_Singer_Genre" FromRole="Singer" ToRole="Genre" />
+          <NavigationProperty Name="Musics" Relationship="MusicModel.FK_Music_Singer" FromRole="Singer" ToRole="Music" />
+          <NavigationProperty Name="Producer" Relationship="MusicModel.FK_Singer_Producer" FromRole="Singer" ToRole="Producer" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -384,13 +443,13 @@
           <Property Name="Gender" Type="Boolean" />
           <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Avatar" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Comments" Relationship="Self.FK_Comment_User" FromRole="User" ToRole="Comment" />
-          <NavigationProperty Name="Logins" Relationship="Self.FK_Login_User" FromRole="User" ToRole="Login" />
-          <NavigationProperty Name="Musics" Relationship="Self.FK_Music_User" FromRole="User" ToRole="Music" />
+          <NavigationProperty Name="Comments" Relationship="MusicModel.FK_Comment_User" FromRole="User" ToRole="Comment" />
+          <NavigationProperty Name="Logins" Relationship="MusicModel.FK_Login_User" FromRole="User" ToRole="Login" />
+          <NavigationProperty Name="Musics" Relationship="MusicModel.FK_Music_User" FromRole="User" ToRole="Music" />
         </EntityType>
         <Association Name="FK_Album_Genre">
-          <End Role="Genre" Type="Self.Genre" Multiplicity="0..1" />
-          <End Role="Album" Type="Self.Album" Multiplicity="*" />
+          <End Type="MusicModel.Genre" Role="Genre" Multiplicity="0..1" />
+          <End Type="MusicModel.Album" Role="Album" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Genre">
               <PropertyRef Name="Id" />
@@ -401,8 +460,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Album_Singer">
-          <End Role="Singer" Type="Self.Singer" Multiplicity="0..1" />
-          <End Role="Album" Type="Self.Album" Multiplicity="*" />
+          <End Type="MusicModel.Singer" Role="Singer" Multiplicity="0..1" />
+          <End Type="MusicModel.Album" Role="Album" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Singer">
               <PropertyRef Name="Id" />
@@ -413,8 +472,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Music_Album">
-          <End Role="Album" Type="Self.Album" Multiplicity="0..1" />
-          <End Role="Music" Type="Self.Music" Multiplicity="*" />
+          <End Type="MusicModel.Album" Role="Album" Multiplicity="0..1" />
+          <End Type="MusicModel.Music" Role="Music" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Album">
               <PropertyRef Name="Id" />
@@ -425,8 +484,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Comment_Music">
-          <End Role="Music" Type="Self.Music" Multiplicity="0..1" />
-          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <End Type="MusicModel.Music" Role="Music" Multiplicity="0..1" />
+          <End Type="MusicModel.Comment" Role="Comment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Music">
               <PropertyRef Name="Id" />
@@ -437,8 +496,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Comment_User">
-          <End Role="User" Type="Self.User" Multiplicity="0..1" />
-          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <End Type="MusicModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="MusicModel.Comment" Role="Comment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="Id" />
@@ -449,8 +508,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Music_Genre">
-          <End Role="Genre" Type="Self.Genre" Multiplicity="0..1" />
-          <End Role="Music" Type="Self.Music" Multiplicity="*" />
+          <End Type="MusicModel.Genre" Role="Genre" Multiplicity="0..1" />
+          <End Type="MusicModel.Music" Role="Music" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Genre">
               <PropertyRef Name="Id" />
@@ -461,8 +520,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Singer_Genre">
-          <End Role="Genre" Type="Self.Genre" Multiplicity="0..1" />
-          <End Role="Singer" Type="Self.Singer" Multiplicity="*" />
+          <End Type="MusicModel.Genre" Role="Genre" Multiplicity="0..1" />
+          <End Type="MusicModel.Singer" Role="Singer" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Genre">
               <PropertyRef Name="Id" />
@@ -473,8 +532,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Login_User">
-          <End Role="User" Type="Self.User" Multiplicity="0..1" />
-          <End Role="Login" Type="Self.Login" Multiplicity="*" />
+          <End Type="MusicModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="MusicModel.Login" Role="Login" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="Id" />
@@ -485,8 +544,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Music_Singer">
-          <End Role="Singer" Type="Self.Singer" Multiplicity="0..1" />
-          <End Role="Music" Type="Self.Music" Multiplicity="*" />
+          <End Type="MusicModel.Singer" Role="Singer" Multiplicity="0..1" />
+          <End Type="MusicModel.Music" Role="Music" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Singer">
               <PropertyRef Name="Id" />
@@ -497,8 +556,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Music_User">
-          <End Role="User" Type="Self.User" Multiplicity="0..1" />
-          <End Role="Music" Type="Self.Music" Multiplicity="*" />
+          <End Type="MusicModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="MusicModel.Music" Role="Music" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="Id" />
@@ -509,8 +568,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Singer_Producer">
-          <End Role="Producer" Type="Self.Producer" Multiplicity="0..1" />
-          <End Role="Singer" Type="Self.Singer" Multiplicity="*" />
+          <End Type="MusicModel.Producer" Role="Producer" Multiplicity="0..1" />
+          <End Type="MusicModel.Singer" Role="Singer" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Producer">
               <PropertyRef Name="id" />
@@ -520,60 +579,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="MusicEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Albums" EntityType="Self.Album" />
-          <EntitySet Name="Comments" EntityType="Self.Comment" />
-          <EntitySet Name="Genres" EntityType="Self.Genre" />
-          <EntitySet Name="Logins" EntityType="Self.Login" />
-          <EntitySet Name="Musics" EntityType="Self.Music" />
-          <EntitySet Name="Producers" EntityType="Self.Producer" />
-          <EntitySet Name="Singers" EntityType="Self.Singer" />
-          <EntitySet Name="Users" EntityType="Self.User" />
-          <AssociationSet Name="FK_Album_Genre" Association="Self.FK_Album_Genre">
-            <End Role="Genre" EntitySet="Genres" />
-            <End Role="Album" EntitySet="Albums" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Album_Singer" Association="Self.FK_Album_Singer">
-            <End Role="Singer" EntitySet="Singers" />
-            <End Role="Album" EntitySet="Albums" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Music_Album" Association="Self.FK_Music_Album">
-            <End Role="Album" EntitySet="Albums" />
-            <End Role="Music" EntitySet="Musics" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Comment_Music" Association="Self.FK_Comment_Music">
-            <End Role="Music" EntitySet="Musics" />
-            <End Role="Comment" EntitySet="Comments" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Comment_User" Association="Self.FK_Comment_User">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Comment" EntitySet="Comments" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Music_Genre" Association="Self.FK_Music_Genre">
-            <End Role="Genre" EntitySet="Genres" />
-            <End Role="Music" EntitySet="Musics" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Singer_Genre" Association="Self.FK_Singer_Genre">
-            <End Role="Genre" EntitySet="Genres" />
-            <End Role="Singer" EntitySet="Singers" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Login_User" Association="Self.FK_Login_User">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Login" EntitySet="Logins" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Music_Singer" Association="Self.FK_Music_Singer">
-            <End Role="Singer" EntitySet="Singers" />
-            <End Role="Music" EntitySet="Musics" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Music_User" Association="Self.FK_Music_User">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Music" EntitySet="Musics" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Singer_Producer" Association="Self.FK_Singer_Producer">
-            <End Role="Producer" EntitySet="Producers" />
-            <End Role="Singer" EntitySet="Singers" />
-          </AssociationSet>
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -583,93 +588,96 @@
           <EntitySetMapping Name="Albums">
             <EntityTypeMapping TypeName="MusicModel.Album">
               <MappingFragment StoreEntitySet="Album">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Image" ColumnName="Image" />
-                <ScalarProperty Name="SingerId" ColumnName="SingerId" />
-                <ScalarProperty Name="UploadDate" ColumnName="UploadDate" />
+                <ScalarProperty Name="C_View" ColumnName="_View" />
                 <ScalarProperty Name="GenresId" ColumnName="GenresId" />
+                <ScalarProperty Name="UploadDate" ColumnName="UploadDate" />
+                <ScalarProperty Name="SingerId" ColumnName="SingerId" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Comments">
             <EntityTypeMapping TypeName="MusicModel.Comment">
               <MappingFragment StoreEntitySet="Comment">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Comment1" ColumnName="Comment" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="MusicId" ColumnName="MusicId" />
                 <ScalarProperty Name="CommentDate" ColumnName="CommentDate" />
+                <ScalarProperty Name="MusicId" ColumnName="MusicId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Comment1" ColumnName="Comment" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Genres">
             <EntityTypeMapping TypeName="MusicModel.Genre">
               <MappingFragment StoreEntitySet="Genre">
-                <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Logins">
             <EntityTypeMapping TypeName="MusicModel.Login">
               <MappingFragment StoreEntitySet="Login">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Musics">
             <EntityTypeMapping TypeName="MusicModel.Music">
               <MappingFragment StoreEntitySet="Music">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="AlbumId" ColumnName="AlbumId" />
-                <ScalarProperty Name="Image" ColumnName="Image" />
-                <ScalarProperty Name="Link" ColumnName="Link" />
-                <ScalarProperty Name="SingerId" ColumnName="SingerId" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="GenresId" ColumnName="GenresId" />
-                <ScalarProperty Name="Pending" ColumnName="Pending" />
+                <ScalarProperty Name="C_View" ColumnName="_View" />
                 <ScalarProperty Name="UploadDate" ColumnName="UploadDate" />
+                <ScalarProperty Name="Pending" ColumnName="Pending" />
+                <ScalarProperty Name="GenresId" ColumnName="GenresId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="SingerId" ColumnName="SingerId" />
+                <ScalarProperty Name="Link" ColumnName="Link" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="AlbumId" ColumnName="AlbumId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Producers">
             <EntityTypeMapping TypeName="MusicModel.Producer">
               <MappingFragment StoreEntitySet="Producer">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Singers">
             <EntityTypeMapping TypeName="MusicModel.Singer">
               <MappingFragment StoreEntitySet="Singer">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Fullname" ColumnName="Fullname" />
-                <ScalarProperty Name="Birthday" ColumnName="Birthday" />
-                <ScalarProperty Name="ProducerId" ColumnName="ProducerId" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="C_View" ColumnName="_View" />
                 <ScalarProperty Name="GenresId" ColumnName="GenresId" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ProducerId" ColumnName="ProducerId" />
+                <ScalarProperty Name="Birthday" ColumnName="Birthday" />
+                <ScalarProperty Name="Fullname" ColumnName="Fullname" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="MusicModel.User">
               <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="Phone" ColumnName="Phone" />
-                <ScalarProperty Name="Gender" ColumnName="Gender" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="Avatar" ColumnName="Avatar" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

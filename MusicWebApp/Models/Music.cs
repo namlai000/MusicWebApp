@@ -30,6 +30,7 @@ namespace MusicWebApp.Models
         public Nullable<int> GenresId { get; set; }
         public Nullable<bool> Pending { get; set; }
         public Nullable<System.DateTime> UploadDate { get; set; }
+        public Nullable<int> C_View { get; set; }
     
         public virtual Album Album { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

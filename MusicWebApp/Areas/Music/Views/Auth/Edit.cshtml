@@ -1,0 +1,143 @@
+﻿@model MusicWebApp.Areas.Music.Models.RegisterUserViewModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <form id="form">
+        <div class="row container">
+            <h3>Edit</h3>
+            <hr />
+        </div>
+        <div class="row container">
+            <hr />
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.LabelFor(a => a.Email, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(a => a.Email, Model.Email, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <img src="@Model.LinkImage" id="preview" width="200" height="200" />
+                        </div>
+                        <div class="col-md-9">
+                            <label for="image" class="col-md-2 control-label">Avatar</label>
+                            <div class="col-md-10">
+                                <input type="text" readonly="" class="form-control" placeholder="Choose image only...">
+                                <input type="file" accept="image/*" id="image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(a => a.Firstname, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(a => a.Firstname, Model.Firstname, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(a => a.Lastname, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(a => a.Lastname, Model.Lastname, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(a => a.Phone, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(a => a.Phone, Model.Phone, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(a => a.Gender, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.CheckBoxFor(a => a.Gender, new { @class = "form-control", @checked = (Model.Gender ? "checked" : "") })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @Html.HiddenFor(a => a.Id)
+
+        <div class="row container">
+            <button type="reset" class="btn btn-default btn-raised">Reset</button>
+            <button type="button" class="btn btn-primary btn-raised" onclick="Submit()" id="btnSignup">Save Changes</button>
+            <div id="message" style="display:none">Uploading Avatar ... (0%)</div>
+        </div>
+    </form>
+</div>
+
+<script>
+    var myImage;
+
+    $(document).ready(function () {
+        $("#image").change(function () {
+            readURL(this);
+            myImage = this.files[0];
+        });
+
+        var progressNotifier = $.connection.progressHub;
+        progressNotifier.client.sendMessage = function (count) {
+            $('#message').html("<b>" + count + "</b>");
+        };
+
+        $.connection.hub.start().done(function () {
+            var connectionId = $.connection.hub.id;
+            console.log(connectionId);
+        });
+    });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#preview').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function Submit() {
+        if ($('#Email').val() == '') {
+            sweetAlert("Failed!", "Email can't be blank", "error");
+        } else if ($('#Firstname').val() == '') {
+            sweetAlert("Failed!", "Firstname can't be blank", "error");
+        } else if ($('#Lastname').val() == '') {
+            sweetAlert("Failed!", "Lastname can't be blank", "error");
+        } else if ($('#Phone').val() == '') {
+            sweetAlert("Failed!", "Phone can't be blank", "error");
+        } else {
+            $("#btnSignup").attr("disabled", true);
+            $("#message").css("display", "block");
+
+            var formData = new FormData($('#form')[0]);
+            formData.append("ImageBase", myImage);
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Edit", "Auth")",
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (result) {
+                    if (result.success) {
+                        sweetAlert("Done!", "Save changes success", "success");
+                        window.location.href = '@Url.Action("Login", "Auth")';
+                    } else {
+                        sweetAlert("Failed!", result.message, "error");
+                        $("#btnSignup").attr("disabled", false);
+                    }
+                },
+                error: function (error) {
+                    alert("Error happened");
+                    $("#btnSignup").attr("disabled", false);
+                }
+            });
+        }
+    }
+</script>

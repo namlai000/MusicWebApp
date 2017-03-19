@@ -42,7 +42,6 @@ namespace MusicWebApp.Areas.Music.Controllers
                     .Child(date + model.ImageBase.FileName)
                     .PutAsync(stream1);
                 task1.Progress.ProgressChanged += (s, e) => ProgressHub.SendMessage("Uploading Image ... (" + Math.Round((e.Position * 1.0 / e.Length * 100), 0) + "%)");
-                string imageUrl = await task1;
 
                 var stream2 = model.MusicBase.InputStream;
                 var task2 = new FirebaseStorage(storageUrl)
@@ -51,7 +50,6 @@ namespace MusicWebApp.Areas.Music.Controllers
                     .Child(date + model.MusicBase.FileName)
                     .PutAsync(stream2);
                 task2.Progress.ProgressChanged += (s, e) => ProgressHub.SendMessage("Uploading Music ... (" + Math.Round((e.Position * 1.0 / e.Length * 100), 0) + "%)");
-                string musicUrl = await task2;
 
                 MusicEntities en = new MusicEntities();
 
@@ -62,6 +60,9 @@ namespace MusicWebApp.Areas.Music.Controllers
                 {
                     userLogin = login.User;
                 }
+
+                string imageUrl = await task1;
+                string musicUrl = await task2;
 
                 var music = new MusicWebApp.Models.Music
                 {
@@ -74,14 +75,12 @@ namespace MusicWebApp.Areas.Music.Controllers
                     GenresId = model.GenresId,
                     Pending = false,
                     UploadDate = DateTime.Now,
+                    C_View = 0,
                 };
 
                 en.Musics.Add(music);
-                int updateRow = en.SaveChanges();
-                if (updateRow > 0)
-                {
-                    message = "Save successful";
-                }
+                en.SaveChanges();
+                message = "Save successful";
             }
             catch (Exception ex)
             {

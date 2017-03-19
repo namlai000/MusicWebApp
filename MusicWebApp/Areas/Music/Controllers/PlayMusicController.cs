@@ -1,4 +1,5 @@
-﻿using MusicWebApp.Areas.Music.Models;
+﻿using Hangfire;
+using MusicWebApp.Areas.Music.Models;
 using MusicWebApp.Models;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,10 @@ namespace MusicWebApp.Areas.Music.Controllers
         {
             MusicEntities en = new MusicEntities();
             var model = en.Musics.FirstOrDefault(a => a.Id == musicid);
+            if (model != null)
+            {
+                BackgroundJob.Enqueue(() => Background.UpdateView(model.Id));
+            }
             return View(model);
         }
 
