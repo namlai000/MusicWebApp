@@ -103,14 +103,22 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetComments(JQueryDataTableParamModel param, int musicId)
         {
-            MusicEntities en = new MusicEntities();
-            var model = en.Comments.Where(a => a.MusicId == musicId);
-            var c = model.Count();
-            var data = model
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/comments/music/" + musicId;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            List<Comment> comments = null;
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                comments = JsonConvert.DeserializeObject<List<Comment>>(json);
+            }
+
+            var c = comments.Count();
+            var data = comments
                 .OrderByDescending(a => a.CommentDate)
                 .Skip(param.iDisplayStart)
                 .Take(param.iDisplayLength)
-                .ToList()
                 .Select(a => new IConvertible[]
                 {
                     a.User.FirstName + " " + a.User.LastName,
