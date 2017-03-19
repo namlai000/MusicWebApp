@@ -1,7 +1,7 @@
 ﻿using MusicWebApp.Controllers;
 using MusicWebApp.Models;
+using System.Diagnostics;
 using System.Linq;
-using System.Web;
 using System.Web.SessionState;
 
 namespace MusicWebApp.Areas.Music.Models
@@ -62,6 +62,12 @@ namespace MusicWebApp.Areas.Music.Models
                     }
                 }
             }
+        }
+
+        public static void ResetViewEachWeek()
+        {
+            //MusicEntities en = new MusicEntities();
+            Debug.WriteLine("VIEWS: Resetted");
         }
     }
 }
