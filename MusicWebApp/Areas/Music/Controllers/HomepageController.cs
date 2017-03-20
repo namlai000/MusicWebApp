@@ -154,19 +154,33 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetNewestComments()
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/comments/recent10";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
-            WebResponse response = request.GetResponse();
-            List<Comment> comments = null;
-            using (Stream responseStream = response.GetResponseStream())
-            {
-                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-                var json = reader.ReadToEnd();
-                comments = JsonConvert.DeserializeObject<List<Comment>>(json);
-            }
+            //string api = "http://fmusicapi.azurewebsites.net/MusicProject/comments/recent10";
+            //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            //WebResponse response = request.GetResponse();
+            //List<Comment> comments = null;
+            //using (Stream responseStream = response.GetResponseStream())
+            //{
+            //    StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+            //    var json = reader.ReadToEnd();
+            //    comments = JsonConvert.DeserializeObject<List<Comment>>(json);
+            //}
 
-            var data = comments
+            //var data = comments
+            //    .Take(10)
+            //    .Select(a => new IConvertible[]
+            //    {
+            //        a.Music.Name,
+            //        a.Music.Id,
+            //        !string.IsNullOrEmpty(a.User.FirstName) && !string.IsNullOrEmpty(a.User.LastName) ? (a.User.FirstName + " " + a.User.LastName) : a.User.Logins.FirstOrDefault().Username,
+            //        a.User.Avatar,
+            //        a.Comment1,
+            //    });
+
+            MusicEntities en = new MusicEntities();
+            var data = en.Comments
+                .OrderByDescending(a => a.CommentDate)
                 .Take(10)
+                .ToList()
                 .Select(a => new IConvertible[]
                 {
                     a.Music.Name,
