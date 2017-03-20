@@ -19,7 +19,7 @@
                 <ul>
                     <li class="text-info">Genres: @Model.Genre.Name</li>
                     <li class="text-info">Publish Date: @Model.UploadDate.Value.ToString("dd/MM/yyyy")</li>
-                    <li class="text-info">Total @Model.Musics.Count music tracks</li>
+                    <li class="text-info">Total @(new MusicWebApp.Models.MusicEntities().Musics.Where(a => a.Album.Id == Model.Id).Count()) music tracks</li>
                 </ul>
             </div>
         </div>
