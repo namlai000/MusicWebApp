@@ -1,4 +1,5 @@
-﻿using Hangfire;
+﻿using AutoMapper;
+using Hangfire;
 using MusicWebApp.Areas.Music.Models;
 using System;
 using System.Collections.Generic;

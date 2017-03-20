@@ -1,4 +1,5 @@
-﻿using Hangfire;
+﻿using AutoMapper;
+using Hangfire;
 using MusicWebApp.Areas.Music.Models;
 using MusicWebApp.Controllers;
 using MusicWebApp.Models;
@@ -37,6 +38,25 @@ namespace MusicWebApp.Areas.Music.Controllers
             return View(model);
         }
 
+        public ActionResult NextSong(int genresId, int musicId)
+        {
+            MusicEntities en = new MusicEntities();
+            var music = en.Musics
+                .Where(a => a.Id != musicId && a.Genre.Id == genresId)
+                .OrderBy(a => Guid.NewGuid())
+                .ToList()
+                .Select(a => new IConvertible[] 
+                {
+                    a.Image,
+                    a.Name,
+                    a.Singer.Fullname,
+                    a.Id,
+                })
+                .FirstOrDefault();
+
+            return Json(music, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult Album(int albumId)
         {
             MusicEntities en = new MusicEntities();
@@ -46,7 +66,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult LoadAlbumSong(int albumId)
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject//music/albums/" + albumId;
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/albums/" + albumId;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             List<MusicWebApp.Models.Music> model = null;

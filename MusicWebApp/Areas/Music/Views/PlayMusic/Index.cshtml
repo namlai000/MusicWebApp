@@ -18,68 +18,82 @@
             <h3>@Model.Name - <a href="@Url.Action("SingerAbout", "Singer", new { singerId = Model.Singer.Id })" data-toggle="tooltip" data-placement="top" title="Click to view details about this singer">@Model.Singer.Fullname</a></h3>
             <hr />
         </div>
-        <div class="col-md-12">
-            <div class='jAudio' style="width: 80%">
-                <audio id="aud" controls hidden></audio>
-                <div class='jAudio--ui'>
-                    <div class='jAudio--thumb'></div>
-                    <div class='jAudio--status-bar'>
-                        <div class='jAudio--details'></div>
-                        <div class='jAudio--volume-bar'></div>
-                        <div class='jAudio--progress-bar'>
-                            <div class='jAudio--progress-bar-wrapper'>
-                                <div class='jAudio--progress-bar-played'>
-                                    <span class='jAudio--progress-bar-pointer'></span>
+        <div class="row container">
+            <div class="col-md-12">
+                <div class='jAudio' style="width:90%">
+                    <audio id="aud" controls hidden></audio>
+                    <div class='jAudio--ui'>
+                        <div class='jAudio--thumb'></div>
+                        <div class='jAudio--status-bar'>
+                            <div class='jAudio--details'></div>
+                            <div class='jAudio--volume-bar'></div>
+                            <div class='jAudio--progress-bar'>
+                                <div class='jAudio--progress-bar-wrapper'>
+                                    <div class='jAudio--progress-bar-played'>
+                                        <span class='jAudio--progress-bar-pointer'></span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class='jAudio--time'>
-                            <span class='jAudio--time-elapsed'>00:00</span>
-                            <span class='jAudio--time-total'>00:00</span>
+                            <div class='jAudio--time'>
+                                <span class='jAudio--time-elapsed'>00:00</span>
+                                <span class='jAudio--time-total'>00:00</span>
+                            </div>
                         </div>
                     </div>
+                    @*<div class='jAudio--playlist'>
+                </div>*@
+                    <div class='jAudio--controls'>
+                        <ul>
+                            <li><button type="button" class='jAudio--control jAudio--control-prev' data-action='prev'><span></span></button></li>
+                            <li><button type="button" id="play" class='jAudio--control jAudio--control-play' data-action='play'><span></span></button></li>
+                            <li><button type="button" class='jAudio--control jAudio--control-next' data-action='next'><span></span></button></li>
+                        </ul>
+                    </div>
                 </div>
-                @*<div class='jAudio--playlist'>
-                    </div>*@
-                <div class='jAudio--controls'>
-                    <ul>
-                        <li><button type="button" class='jAudio--control jAudio--control-prev' data-action='prev'><span></span></button></li>
-                        <li><button type="button" id="play" class='jAudio--control jAudio--control-play' data-action='play'><span></span></button></li>
-                        <li><button type="button" class='jAudio--control jAudio--control-next' data-action='next'><span></span></button></li>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-12">
+                <div class="togglebutton" style="padding-left:24px">
+                    <label>
+                        <input id="autoplay" type="checkbox" checked> <span class="text-primary">Enable Autoplay?</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-12">
+                <div class="col-md-3">
+                    <a class="btn btn-raised btn-inverse" href="@Model.Link">Download</a>
+                </div>
+                <div class="col-md-9">
+                    <label style="color:black">Scan this to download on your mobile devices!</label><br />
+                    <img src="~/Content/StaticImages/6b49499b796c8ba9e52f1feb83cc6053.gif" id="img2" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-12">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <i class="glyphicon glyphicon-tags"></i> Tags:
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top:0px">
+                    <ul class="list-inline col-md-12">
+                        <li class="list-group-item">
+                            <a href="@Url.Action("Index", "MusicTracks", new { id = Model.Genre.Id })">@Model.Genre.Name</a>
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
         <div class="form-group col-md-12">
-            <div class="form-group col-md-3">
-                <a class="btn btn-raised btn-inverse" href="@Model.Link">Download</a>
-            </div>
-            <div class="form-group col-md-9">
-                <label style="color:black">Scan this to download on your mobile devices!</label><br />
-                <img src="~/Content/StaticImages/6b49499b796c8ba9e52f1feb83cc6053.gif" id="img2" />
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="form-group">
-                <div class="col-md-12">
-                    <i class="glyphicon glyphicon-tags"></i> Tags:
-                </div>
-            </div>
-            <div class="form-group" style="margin-top:0px">
-                <ul class="list-inline col-md-12">
-                    <li class="list-group-item">
-                        <a href="@Url.Action("Index", "MusicTracks", new { id = Model.Genre.Id })">@Model.Genre.Name</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <br />
-        <div class="col-md-12">
             <div class="form-group label-floating">
                 <label class="control-label" for="focusedInput2">Write your comment here!</label>
                 <div class="form-inline">
                     <input class="form-control" id="focusedInput2" type="text" maxlength="255" oninput="Validate()" />
-                    <button class="btn btn-default btn-raised" onclick="Comment()">Comment</button>
+                    <button id="btnComment" class="btn btn-default btn-raised" onclick="Comment()">Comment</button>
                 </div>
                 <p class="help-block" id="help">Comments have 255 characters left</p>
             </div>
@@ -95,8 +109,10 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="col-md-12">
-            <table id="sameSongs" border="0" class="table-hover table-responsive">
+        <div class='col-md-12'><font color='purple'><b>Next Song</b></font></div>
+        <div id="next" class="form-group col-md-12"></div>
+        <div class="form-group col-md-12">
+            <table id="sameSongs" border="0" class="table-hover table-responsive" style="padding-top:24px">
                 <thead>
                     <tr>
                         <td>
@@ -113,6 +129,15 @@
     $(document).ready(function () {
         $.fn.dataTable.ext.classes.sPageButton = 'btn btn-primary';
         $.fn.dataTableExt.oStdClasses.sPageButtonActive = "btn-raised";
+
+        var checked = localStorage.getItem("nextSongCheck");
+        if (checked != null) {
+            if (checked == 'true') {
+                $('#autoplay').prop('checked', true);
+            } else {
+                $('#autoplay').prop('checked', false);
+            }
+        }
 
         var t = {
             playlist: [
@@ -131,15 +156,60 @@
 
         var oAudio = document.getElementById('aud');
         oAudio.volume = 1.0;
+        oAudio.addEventListener("ended", function(){
+            var href = $('#nextSong').attr('href');
+            var toggled = $('#autoplay').is(':checked');
+            if (toggled) {
+                $('#play').click();
+                window.location.href = href, true;
+            }
+        });
 
-        LoadSameSongs();
-        LoadComments();
+        $('#autoplay').change(function() {
+            if (this.checked) {
+                localStorage.setItem("nextSongCheck", true);
+            } else {
+                localStorage.setItem("nextSongCheck", false);
+            }
+        });
+
+        $("#btnComment").attr("disabled", true);
 
         var link = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent('@Model.Link');
         $('#img2').prop('src', link);
+
+        LoadSameSongs();
+        LoadComments();
+        LoadNextSong();
     });
 
+    function LoadNextSong() {
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("NextSong", "PlayMusic")',
+            data: { genresId : '@Model.Genre.Id', musicId : '@Model.Id' },
+            dataType: 'json',
+            success: function (data) {
+                var link =
+                    "<div class='col-md-6'>" +
+                        "<img class='img-circle' src='" + data[0] + "' width='100' height='100'/>" +
+                    "</div>" +
+                    "<div class='col-md-6'>" +
+                        "<h4 class='row'><a id='nextSong' href='@Url.Action("Index", "PlayMusic")/?musicId=" + data[3] + "'>" + data[1] + "</a></h4>" +
+                        "<div class='row'>" + data[2] + "</div>" +
+                    "</div>";
+                $('#next').html(link);
+            }
+        });
+    }
+
     function Validate() {
+        if ($("#focusedInput2").val() == '') {
+            $("#btnComment").attr("disabled", true);
+        } else {
+            $("#btnComment").attr("disabled", false);
+        }
+
         var help = document.getElementById('help');
         if ($('#focusedInput2').val().length <= 255) {
             var left = 255 - $('#focusedInput2').val().length;
@@ -148,6 +218,9 @@
     }
 
     function Comment() {
+        $("#btnComment").attr("disabled", true);
+        $('#btnComment').html("Wait ...");
+
         $.ajax({
             type: 'POST',
             url: '@Url.Action("PostComment", "PlayMusic")',
@@ -163,7 +236,14 @@
                     oTable._fnPageChange(0);
                     oTable._fnAjaxUpdate();
                     $('#focusedInput2').val("");
+                    $("#btnComment").attr("disabled", false);
+                    $('#btnComment').html('Comment');
                 }
+            },
+            error: function (data) {
+                $('#btnComment').html('Comment');
+                $("#btnComment").attr("disabled", false);
+                swal("Please log in!", "You need to login first to be able to comment!", "error");
             }
         });
     }
