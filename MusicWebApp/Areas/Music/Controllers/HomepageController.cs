@@ -24,19 +24,21 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetTop10()
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/top10";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
-            WebResponse response = request.GetResponse();
-            List<MusicWebApp.Models.Music> musics = null;
-            using (Stream responseStream = response.GetResponseStream())
-            {
-                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-                var json = reader.ReadToEnd();
-                musics = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
-            }
-
-            var data = musics
+            //string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/top10";
+            //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            //WebResponse response = request.GetResponse();
+            //List<MusicWebApp.Models.Music> musics = null;
+            //using (Stream responseStream = response.GetResponseStream())
+            //{
+            //    StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+            //    var json = reader.ReadToEnd();
+            //    musics = JsonConvert.DeserializeObject<List<MusicWebApp.Models.Music>>(json);
+            //}
+            MusicEntities en = new MusicEntities();
+            var data = en.Musics
+                .OrderByDescending(a => a.C_View)
                 .Take(10)
+                .ToList()
                 .Select(a => new IConvertible[]
                 {
                     a.Name,
