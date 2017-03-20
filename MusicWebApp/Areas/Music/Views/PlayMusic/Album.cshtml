@@ -107,6 +107,9 @@
         $("#sameSongs").dataTable({
             "bFilter": false,
             "bPaginate": false,
+            "bServerSide": false,
+            "bProcessing": false,
+            "bSort": false,
             "sAjaxSource": "@Url.Action("GetSameSongs", "PlayMusic")",
             "fnServerParams": function (aoData) {
                 aoData.push(

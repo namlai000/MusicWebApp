@@ -12,24 +12,24 @@
             <tr>
                 <td colspan="3" class="big-banner">
                     <a href="#" class="week-link">
-                        <img src="https://www.wpfreeware.com/wp-content/uploads/2014/09/placeholder-images.jpg" data-caption="Placeholder" class="week img-responsive big-image" style="width:100%" />
+                        <img src="~/Content/StaticImages/6b49499b796c8ba9e52f1feb83cc6053.gif" data-caption="Placeholder" class="week img-responsive big-image" style="width:100%" />
                     </a>
                 </td>
             </tr>
             <tr>
                 <td>
                     <a href="#" class="week-link">
-                        <img src="https://www.wpfreeware.com/wp-content/uploads/2014/09/placeholder-images.jpg" data-caption="Placeholder" class="week img-responsive" />
+                        <img src="~/Content/StaticImages/6b49499b796c8ba9e52f1feb83cc6053.gif" data-caption="Placeholder" class="week img-responsive" />
                     </a>
                 </td>
                 <td>
                     <a href="#" class="week-link">
-                        <img src="https://www.wpfreeware.com/wp-content/uploads/2014/09/placeholder-images.jpg" data-caption="Placeholder" class="week img-responsive" />
+                        <img src="~/Content/StaticImages/6b49499b796c8ba9e52f1feb83cc6053.gif" data-caption="Placeholder" class="week img-responsive" />
                     </a>
                 </td>
                 <td>
                     <a href="#" class="week-link">
-                        <img src="https://www.wpfreeware.com/wp-content/uploads/2014/09/placeholder-images.jpg" data-caption="Placeholder" class="week img-responsive" />
+                        <img src="~/Content/StaticImages/6b49499b796c8ba9e52f1feb83cc6053.gif" data-caption="Placeholder" class="week img-responsive" />
                     </a>
                 </td>
             </tr>
@@ -156,6 +156,9 @@
 
     function LoadTableTop10() {
         $("#tableTop10").dataTable({
+            "bServerSide": false,
+            "bProcessing": false,
+            "bSort": false,
             "bFilter": false,
             "bPaginate": false,
             "sAjaxSource": "@Url.Action("GetTop10", "Homepage")",
@@ -188,6 +191,9 @@
 
     function LoadNewestTracks() {
         $("#newMusic").dataTable({
+            "bServerSide": false,
+            "bProcessing": false,
+            "bSort": false,
             "bFilter": false,
             "bPaginate": false,
             "sAjaxSource": "@Url.Action("GetNewestTracks", "Homepage")",
@@ -220,6 +226,9 @@
 
     function LoadNewestAlbums() {
         $("#newAlbums").dataTable({
+            "bServerSide": false,
+            "bProcessing": false,
+            "bSort": false,
             "bFilter": false,
             "bPaginate": false,
             "sAjaxSource": "@Url.Action("GetNewestAlbums", "Homepage")",
@@ -252,9 +261,12 @@
 
     function LoadNewestComments() {
         $("#newComment").dataTable({
+            "bServerSide": false,
+            "bProcessing": false,
             "bFilter": false,
             "bPaginate": false,
             "sAjaxSource": "@Url.Action("GetNewestComments", "Homepage")",
+            "bSort": false,
             "aoColumnDefs": [
                 {
                     "aTargets": [0],

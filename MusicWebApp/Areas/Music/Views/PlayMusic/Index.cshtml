@@ -165,6 +165,7 @@
             "bLengthChange": false,
             "bServerSide": true,
             "bProcessing": true,
+            "bSort": false,
             "bInfo": false,
             "iDisplayLength": 10,
             "sAjaxSource": "@Url.Action("GetComments", "PlayMusic")",
@@ -210,6 +211,9 @@
         $("#sameSongs").dataTable({
             "bFilter": false,
             "bPaginate": false,
+            "bServerSide": false,
+            "bProcessing": false,
+            "bSort": false,
             "sAjaxSource": "@Url.Action("GetSameSongs", "PlayMusic")",
             "fnServerParams": function (aoData) {
                 aoData.push(
