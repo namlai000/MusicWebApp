@@ -81,6 +81,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                     a.Id,
                     a.Singer.Fullname,
                     a.Image,
+                    a.C_View,
                 });
 
             return Json(new
@@ -119,6 +120,7 @@ namespace MusicWebApp.Areas.Music.Controllers
                     a.Id,
                     a.Singer.Fullname,
                     a.Image,
+                    a.C_View,
                 });
 
             return Json(new

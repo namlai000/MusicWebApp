@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewBag.Title = "Favorite";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="col-md-8">
+        <div class="col-md-12">
+            <h3>Your Favorites</h3>
+            <hr />
+        </div>
+        <div class="col-md-12">
+            <div class='jAudio' style="width: 100%">
+                <audio id="aud" controls hidden></audio>
+                <div class='jAudio--ui'>
+                    <div class='jAudio--thumb'></div>
+                    <div class='jAudio--status-bar'>
+                        <div class='jAudio--details'></div>
+                        <div class='jAudio--volume-bar'></div>
+                        <div class='jAudio--progress-bar'>
+                            <div class='jAudio--progress-bar-wrapper'>
+                                <div class='jAudio--progress-bar-played'>
+                                    <span class='jAudio--progress-bar-pointer'></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='jAudio--time'>
+                            <span class='jAudio--time-elapsed'>00:00</span>
+                            <span class='jAudio--time-total'>00:00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class='jAudio--playlist'>
+                </div>
+                <div class='jAudio--controls'>
+                    <ul>
+                        <li><button type="button" class='jAudio--control jAudio--control-prev' data-action='prev'><span></span></button></li>
+                        <li><button type="button" id="play" class='jAudio--control jAudio--control-play' data-action='play'><span></span></button></li>
+                        <li><button type="button" class='jAudio--control jAudio--control-next' data-action='next'><span></span></button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $.fn.dataTable.ext.classes.sPageButton = 'btn btn-primary';
+        $.fn.dataTableExt.oStdClasses.sPageButtonActive = "btn-raised";
+
+        LoadAlbum();
+        LoadSameSongs();
+    });
+
+    function LoadAlbum() {
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("LoadFavoriteSong", "PlayMusic")',
+            data: { userId: '@ViewBag.UserId' },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success) {
+                    var t = data.data;
+                    $(".jAudio").jAudio(t);
+                    $('#play').click();
+
+                    var oAudio = document.getElementById('aud');
+                    oAudio.volume = 1.0;
+                }
+            }
+        });
+    }
+</script>
+

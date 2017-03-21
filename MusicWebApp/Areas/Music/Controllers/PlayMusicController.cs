@@ -37,6 +37,41 @@ namespace MusicWebApp.Areas.Music.Controllers
             return View(model);
         }
 
+        [Authorize]
+        public ActionResult Favorite(int userId)
+        {
+            MusicEntities en = new MusicEntities();
+            var musics = en.Musics.Where(a => a.Favorites.Where(b => b.User.Id == userId).Count() > 0).Count();
+            if (musics == 0) return RedirectToAction("Index", "Favorite", new { userId = userId, error = "Your favorites is empty!" });
+
+            ViewBag.UserId = userId;
+            return View();
+        }
+
+        [Authorize]
+        public ActionResult LoadFavoriteSong(int userId)
+        {
+            MusicEntities en = new MusicEntities();
+            var musics = en.Musics
+                .Where(a => a.Favorites.Where(b => b.User.Id == userId).Count() > 0)
+                .ToList()
+                .Select(a => new Track
+                {
+                    file = a.Link,
+                    thumb = a.Image,
+                    trackName = a.Name,
+                    trackArtist = a.Singer.Fullname,
+                    trackAlbum = "Single",
+                });
+
+            Playlists list = new Playlists
+            {
+                playlist = musics,
+            };
+
+            return Json(new { success = true, data = list }, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult NextSong(int genresId, int musicId)
         {
             MusicEntities en = new MusicEntities();

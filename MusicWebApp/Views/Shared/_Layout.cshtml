@@ -274,8 +274,13 @@
         <div class="container col-md-12" style="color:white">
             <div class="form-horizontal">
                 <div class="form-group col-md-5">
-                    <h3>Your location</h3>
-                    <div id="mapholder" class="col-md-12"></div>
+                    <h3>Download Apps</h3>
+                    <div class="col-md-12">
+                        <img src="~/Content/StaticImages/Get_it_on_Google_play.svg.png" class="img-responsive" />
+                    </div>
+                    <div class="col-md-12">
+                        <img src="~/Content/StaticImages/2000px-Available_on_the_App_Store_(black)_SVG.svg.png" class="img-responsive" />
+                    </div>
                 </div>
                 <div class="form-group col-md-3">
                     <h3>Connect with us</h3>
@@ -349,7 +354,7 @@
 <script>
     $(document).ready(function () {
         $.material.init();
-        GetLocation();
+
         $("body").tooltip({ selector: '[data-toggle=tooltip]' });
 
         $('#txtSearch').on('keypress', function (e) {
@@ -366,43 +371,6 @@
             }
         });
     });
-
-    function GetLocation() {
-        if (navigator.geolocation) navigator.geolocation.getCurrentPosition(showPosition, showError);
-        else {
-            var map = document.getElementById('mapholder');
-            map.innerHTML = "Your browser doesn't support geolocation!";
-        }
-    }
-
-    function showPosition(position) {
-        var lat = position.coords.latitude + "," + position.coords.longitude;
-        var imgUrl = "https://maps.googleapis.com/maps/api/staticmap?center="
-        + lat + "&zoom=14&size=400x300&sensor=false&key=AIzaSyBU7xtZiE0EGa5YWtcgyq5QVAzUHfyMMAQ";
-        var map = document.getElementById('mapholder');
-        map.innerHTML = "<img src='" + imgUrl + "' class='img-responsive'/>";
-    }
-
-    function showError(error) {
-        var map = document.getElementById('mapholder');
-        switch (error.code) {
-            case error.PERMISSION_DENIED:
-                map.innerHTML = "Permission denied";
-                break;
-            case error.POSITION_UNAVAILABLE:
-                map.innerHTML = "Position unavailable";
-                break;
-            case error.TIMEOUT:
-                map.innerHTML = "Time out";
-                break;
-            case error.UNKNOWN_ERROR:
-                map.innerHTML = "Unknown error";
-                break;
-            default:
-                map.innerHTML = "Other errors";
-                break;
-        }
-    }
 
     function AddToFavorite(id) {
         $.ajax({

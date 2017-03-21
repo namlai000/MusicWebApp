@@ -11,10 +11,18 @@
         </div>
         <div class="col-md-10">
             <ul class="list-group list-inline pull-right">
-                <li class="list-group-item"><a href="@Url.Action("Favorite", "PlayMusic")" class="btn btn-primary btn-raised"><i class="glyphicon glyphicon-music"></i> Listen to your favorites</a></li>
+                <li class="list-group-item"><a href="@Url.Action("Favorite", "PlayMusic", new { userId = ViewBag.UserId })" class="btn btn-primary btn-raised" id="playFav"><i class="glyphicon glyphicon-music"></i> Listen to your favorites</a></li>
             </ul>
         </div>
     </div>
+
+    @if (!string.IsNullOrEmpty(Request.QueryString["error"]))
+    {
+        <script>
+            swal('Failed!', '@Request.QueryString["error"]', 'error');
+        </script>
+    }
+
     <div class="row">
         <div class="form-group">
             <table id="playlist" class="table-hover"></table>

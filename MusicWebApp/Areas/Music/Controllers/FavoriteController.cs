@@ -17,6 +17,7 @@ namespace MusicWebApp.Areas.Music.Controllers
             return View();
         }
 
+        [Authorize]
         public ActionResult GetFavorites(int userId)
         {
             MusicEntities en = new MusicEntities();
@@ -43,7 +44,12 @@ namespace MusicWebApp.Areas.Music.Controllers
             if (isExist != null)
             {
                 return Json(new { success = false, msg = "Music existed in your Favorites!" }, JsonRequestBehavior.AllowGet);
-            } else
+            }
+            else if (en.Favorites.Where(a => a.User.Id == userId).Count() > 100)
+            {
+                return Json(new { success = false, msg = "Your favorites has reached limit (100 songs)" }, JsonRequestBehavior.AllowGet);
+            }
+            else
             {
                 var fav = new Favorite
                 {
