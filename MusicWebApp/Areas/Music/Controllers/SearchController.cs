@@ -16,6 +16,11 @@ namespace MusicWebApp.Areas.Music.Controllers
         // GET: Music/Search
         public ActionResult Index(string searchText)
         {
+            if (string.IsNullOrEmpty(searchText.Trim()))
+            {
+                searchText = "Please enter a valid text!";
+            }
+
             ViewBag.Search = searchText;
             return View();
         }

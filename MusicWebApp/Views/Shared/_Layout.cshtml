@@ -169,6 +169,7 @@
         if (login != null)
         {
             userLogin = login.User;
+            ViewBag.UserId = userLogin.Id;
         }
     }
 
@@ -350,6 +351,9 @@
 
         $('#txtSearch').on('keypress', function (e) {
             var search = $('#txtSearch').val();
+            if (e.which === 32 && search == '') {
+                e.preventDefault();
+            }
             if (e.which === 13 && search != '') {
                 $(this).attr("disabled", "disabled");
                 
