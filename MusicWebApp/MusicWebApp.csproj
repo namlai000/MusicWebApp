@@ -399,9 +399,7 @@
     <Content Include="Content\Plugins\sweet-alert\sweetalert-dev.js" />
     <Content Include="Content\Plugins\sweet-alert\sweetalert.css" />
     <Content Include="Content\Plugins\sweet-alert\sweetalert.min.js" />
-    <Content Include="Content\StaticImages\2000px-Available_on_the_App_Store_%28black%29_SVG.svg.png" />
     <Content Include="Content\StaticImages\6b49499b796c8ba9e52f1feb83cc6053.gif" />
-    <Content Include="Content\StaticImages\Get_it_on_Google_play.svg.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
