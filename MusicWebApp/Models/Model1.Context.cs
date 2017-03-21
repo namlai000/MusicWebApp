@@ -27,6 +27,7 @@ namespace MusicWebApp.Models
     
         public virtual DbSet<Album> Albums { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<Favorite> Favorites { get; set; }
         public virtual DbSet<Genre> Genres { get; set; }
         public virtual DbSet<Login> Logins { get; set; }
         public virtual DbSet<Music> Musics { get; set; }

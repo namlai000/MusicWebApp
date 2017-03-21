@@ -1,0 +1,83 @@
+﻿
+@{
+    ViewBag.Title = "Favorites";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-2">
+            <h3 style="color:rgb(170, 0, 157)">Playlists</h3>
+        </div>
+        <div class="col-md-10">
+            <ul class="list-group list-inline pull-right">
+                <li class="list-group-item"><a href="@Url.Action("Favorite", "PlayMusic")" class="btn btn-primary btn-raised"><i class="glyphicon glyphicon-music"></i> Listen to your favorites</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <table id="playlist" class="table-hover"></table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $.fn.dataTable.ext.classes.sPageButton = 'btn btn-primary';
+        $.fn.dataTableExt.oStdClasses.sPageButtonActive = "btn-raised";
+
+        LoadPlaylists();
+    });
+
+    function LoadPlaylists() {
+        $("#playlist").dataTable({
+            "bServerSide": false,
+            "bProcessing": false,
+            "bSort": false,
+            "bFilter": false,
+            "bLengthChange": false,
+            "bInfo": true,
+            "iDisplayLength": 5,
+            "sAjaxSource": "@Url.Action("GetFavorites", "Favorite", new { userId = ViewBag.UserId })",
+            "oLanguage": {
+                "oPaginate": {
+                    "sInfo": "",
+                    "sNext": "<i class='glyphicon glyphicon-step-forward'></i>",
+                    "sPrevious": "<i class='glyphicon glyphicon-step-backward'></i>"
+                }
+            },
+            "aoColumnDefs": [
+                {
+                    "aTargets": [0],
+                    "mRender": function (data, type, row) {
+                        var id = row[0];
+                        var title = row[1];
+                        var image = row[2];
+                        var singer = row[3];
+                        var view = row[4];
+                        var display = "" +
+                            "<div class='row' style='padding-top:14px;padding-bottom:14px'>" +
+                                "<div class='col-md-2'>" +
+                                    "<img src='" + image + "' class='img-circle' width='120' height='120'/>" +
+                                "</div>" +
+                                "<div class='col-md-10'>" +
+                                    "<span class='pull-right' style='padding-right:16px'>" +
+                                        "<i class='glyphicon glyphicon-eye-open'></i> " + view + " " +
+                                        "<button class='btn btn-success' onclick='RemoveFavorite(" + id + ")'><i class='glyphicon glyphicon-trash'></i></button>" +
+                                    "</span>" +
+                                    "<b><a href='#'>" + title + "</a></b><br/>" +
+                                    singer +
+                                "</div>" +
+                            "</div>";
+                        return display;
+                    },
+                    "bSortable": false,
+                },
+            ],
+            "bAutoWidth": false,
+        });
+    }
+</script>
+
+

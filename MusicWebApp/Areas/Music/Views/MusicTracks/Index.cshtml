@@ -139,7 +139,10 @@
                                     "<img src='" + image + "' class='img-responsive' />" +
                                 "</div>" +
                                 "<div class='col-md-10'>" +
-                                    "<span class='pull-right' style='padding-right:16px'><i class='glyphicon glyphicon-eye-open'></i> " + view + "</span>" +
+                                    "<span class='pull-right' style='padding-right:16px'>" +
+                                        "<i class='glyphicon glyphicon-eye-open'></i> " + view + " " +
+                                        "<button class='btn btn-success' onclick='AddToFavorite(" + link + ")'><i class='glyphicon glyphicon-star-empty'></i></button>" +
+                                    "</span>" +
                                     "<b><a href='@Url.Action("Index", "PlayMusic")?musicid=" + link + "'>" + track + "</a></b><br/>" +
                                     singer +
                                 "</div>" +
@@ -198,7 +201,10 @@
                                     "<img src='" + image + "' class='img-responsive' />" +
                                 "</div>" +
                                 "<div class='col-md-10'>" +
-                                    "<span class='pull-right' style='padding-right:16px'><i class='glyphicon glyphicon-eye-open'></i> " + view + "</span>" +
+                                    "<span class='pull-right' style='padding-right:16px'>" +
+                                        "<i class='glyphicon glyphicon-eye-open'></i> " + view + " " +
+                                        "<button class='btn btn-success' onclick='AddToFavorite(" + link + ")'><i class='glyphicon glyphicon-star-empty'></i></button>" +
+                                    "</span>" +
                                     "<b><a href='@Url.Action("Index", "PlayMusic")/?musicid=" + link + "'>" + track + "</a></b><br/>" +
                                     singer +
                                 "</div>" +

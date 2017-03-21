@@ -19,6 +19,7 @@ namespace MusicWebApp.Models
         public Music()
         {
             this.Comments = new HashSet<Comment>();
+            this.Favorites = new HashSet<Favorite>();
         }
     
         public int Id { get; set; }
@@ -37,6 +38,8 @@ namespace MusicWebApp.Models
         public virtual Album Album { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Comment> Comments { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Favorite> Favorites { get; set; }
         public virtual Genre Genre { get; set; }
         public virtual Singer Singer { get; set; }
         public virtual User User { get; set; }

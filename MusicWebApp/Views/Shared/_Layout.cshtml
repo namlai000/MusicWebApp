@@ -33,6 +33,9 @@
     <!-- Sweet alert -->
     <link href="~/Content/Plugins/sweet-alert/sweetalert.css" rel="stylesheet" />
     <script src="~/Content/Plugins/sweet-alert/sweetalert.min.js"></script>
+    <!-- PNotify -->
+    <link href="~/Content/Plugins/PNotify/pnotify.custom.min.css" rel="stylesheet" />
+    <script src="~/Content/Plugins/PNotify/pnotify.custom.min.js"></script>
 
     <style>
         td {
@@ -169,7 +172,6 @@
         if (login != null)
         {
             userLogin = login.User;
-            ViewBag.UserId = userLogin.Id;
         }
     }
 
@@ -208,8 +210,9 @@
                                             }
                                         </a>
                                         <ul class="dropdown-menu">
-                                            <li><a href="@Url.Action("Edit", "Auth", new { userId = userLogin.Id })">Profile</a></li>
-                                            <li><a href="#">History</a></li>
+                                            <li><a href="@Url.Action("Edit", "Auth", new { userId = userLogin.Id })">Edit your Profile</a></li>
+                                            <li><a href="@Url.Action("Index", "Favorite", new { userId = userLogin.Id })">Favorites</a></li>
+                                            <li><a href="#">Manage Uploads</a></li>
                                             <li><a href="#">Change Password</a></li>
                                             <li class="divider"></li>
                                             <li><a href="@Url.Action("Logout", "Auth")"><i class="glyphicon glyphicon-log-out"></i> Sign out</a></li>
@@ -356,7 +359,7 @@
             }
             if (e.which === 13 && search != '') {
                 $(this).attr("disabled", "disabled");
-                
+
                 window.location.href = "/Music/Search/Index/?searchText=" + search;
 
                 $(this).removeAttr("disabled");
@@ -399,5 +402,58 @@
                 map.innerHTML = "Other errors";
                 break;
         }
+    }
+
+    function AddToFavorite(id) {
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("AddToFavorite", "Favorite")',
+            data: { userId: '@userLogin.Id', musicId: id },
+            success: function (data) {
+                if (data.success) {
+                    new PNotify({
+                        title: 'Done',
+                        text: data.msg,
+                        type: 'success'
+                    });
+                } else {
+                    new PNotify({
+                        title: 'Failed',
+                        text: data.msg,
+                        type: 'error'
+                    });
+                }
+            }
+        });
+    }
+
+    function RemoveFavorite(id) {
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("DeleteFavorite", "Favorite")',
+            data: { userId: '@userLogin.Id', musicId: id },
+            success: function (data) {
+                if (data.success) {
+                    new PNotify({
+                        title: 'Done',
+                        text: data.msg,
+                        type: 'success'
+                    });
+                    RefreshTable();
+                } else {
+                    new PNotify({
+                        title: 'Failed',
+                        text: data.msg,
+                        type: 'error'
+                    });
+                }
+            }
+        });
+    }
+
+    function RefreshTable() {
+        var oTable = $("#playlist").dataTable();
+        oTable._fnPageChange(0);
+        oTable._fnAjaxUpdate();
     }
 </script>

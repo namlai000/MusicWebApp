@@ -27,6 +27,14 @@
           <Property Name="MusicId" Type="int" />
           <Property Name="CommentDate" Type="datetime" />
         </EntityType>
+        <EntityType Name="Favorites">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" />
+          <Property Name="MusicId" Type="int" />
+        </EntityType>
         <EntityType Name="Genre">
           <Key>
             <PropertyRef Name="Id" />
@@ -141,6 +149,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Favorites_Music">
+          <End Role="Music" Type="Self.Music" Multiplicity="0..1" />
+          <End Role="Favorites" Type="Self.Favorites" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Music">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Favorites">
+              <PropertyRef Name="MusicId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Favorites_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Favorites" Type="Self.Favorites" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Favorites">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Login_User">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Login" Type="Self.Login" Multiplicity="*" />
@@ -228,6 +260,7 @@
         <EntityContainer Name="MusicModelStoreContainer">
           <EntitySet Name="Album" EntityType="Self.Album" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Comment" EntityType="Self.Comment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Favorites" EntityType="Self.Favorites" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Genre" EntityType="Self.Genre" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Login" EntityType="Self.Login" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Music" EntityType="Self.Music" Schema="dbo" store:Type="Tables" />
@@ -249,6 +282,14 @@
           <AssociationSet Name="FK_Comment_User" Association="Self.FK_Comment_User">
             <End Role="User" EntitySet="User" />
             <End Role="Comment" EntitySet="Comment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Favorites_Music" Association="Self.FK_Favorites_Music">
+            <End Role="Music" EntitySet="Music" />
+            <End Role="Favorites" EntitySet="Favorites" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Favorites_User" Association="Self.FK_Favorites_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Favorites" EntitySet="Favorites" />
           </AssociationSet>
           <AssociationSet Name="FK_Login_User" Association="Self.FK_Login_User">
             <End Role="User" EntitySet="User" />
@@ -286,6 +327,7 @@
         <EntityContainer Name="MusicEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Albums" EntityType="MusicModel.Album" />
           <EntitySet Name="Comments" EntityType="MusicModel.Comment" />
+          <EntitySet Name="Favorites" EntityType="MusicModel.Favorite" />
           <EntitySet Name="Genres" EntityType="MusicModel.Genre" />
           <EntitySet Name="Logins" EntityType="MusicModel.Login" />
           <EntitySet Name="Musics" EntityType="MusicModel.Music" />
@@ -311,6 +353,14 @@
           <AssociationSet Name="FK_Comment_User" Association="MusicModel.FK_Comment_User">
             <End Role="User" EntitySet="Users" />
             <End Role="Comment" EntitySet="Comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Favorites_Music" Association="MusicModel.FK_Favorites_Music">
+            <End Role="Music" EntitySet="Musics" />
+            <End Role="Favorite" EntitySet="Favorites" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Favorites_User" Association="MusicModel.FK_Favorites_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Favorite" EntitySet="Favorites" />
           </AssociationSet>
           <AssociationSet Name="FK_Music_Genre" Association="MusicModel.FK_Music_Genre">
             <End Role="Genre" EntitySet="Genres" />
@@ -364,6 +414,16 @@
           <NavigationProperty Name="Music" Relationship="MusicModel.FK_Comment_Music" FromRole="Comment" ToRole="Music" />
           <NavigationProperty Name="User" Relationship="MusicModel.FK_Comment_User" FromRole="Comment" ToRole="User" />
         </EntityType>
+        <EntityType Name="Favorite">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="MusicId" Type="Int32" />
+          <NavigationProperty Name="Music" Relationship="MusicModel.FK_Favorites_Music" FromRole="Favorite" ToRole="Music" />
+          <NavigationProperty Name="User" Relationship="MusicModel.FK_Favorites_User" FromRole="Favorite" ToRole="User" />
+        </EntityType>
         <EntityType Name="Genre">
           <Key>
             <PropertyRef Name="Id" />
@@ -401,6 +461,7 @@
           <Property Name="C_View" Type="Int32" />
           <NavigationProperty Name="Album" Relationship="MusicModel.FK_Music_Album" FromRole="Music" ToRole="Album" />
           <NavigationProperty Name="Comments" Relationship="MusicModel.FK_Comment_Music" FromRole="Music" ToRole="Comment" />
+          <NavigationProperty Name="Favorites" Relationship="MusicModel.FK_Favorites_Music" FromRole="Music" ToRole="Favorite" />
           <NavigationProperty Name="Genre" Relationship="MusicModel.FK_Music_Genre" FromRole="Music" ToRole="Genre" />
           <NavigationProperty Name="Singer" Relationship="MusicModel.FK_Music_Singer" FromRole="Music" ToRole="Singer" />
           <NavigationProperty Name="User" Relationship="MusicModel.FK_Music_User" FromRole="Music" ToRole="User" />
@@ -444,6 +505,7 @@
           <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Avatar" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Comments" Relationship="MusicModel.FK_Comment_User" FromRole="User" ToRole="Comment" />
+          <NavigationProperty Name="Favorites" Relationship="MusicModel.FK_Favorites_User" FromRole="User" ToRole="Favorite" />
           <NavigationProperty Name="Logins" Relationship="MusicModel.FK_Login_User" FromRole="User" ToRole="Login" />
           <NavigationProperty Name="Musics" Relationship="MusicModel.FK_Music_User" FromRole="User" ToRole="Music" />
         </EntityType>
@@ -503,6 +565,30 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Comment">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Favorites_Music">
+          <End Type="MusicModel.Music" Role="Music" Multiplicity="0..1" />
+          <End Type="MusicModel.Favorite" Role="Favorite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Music">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Favorite">
+              <PropertyRef Name="MusicId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Favorites_User">
+          <End Type="MusicModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="MusicModel.Favorite" Role="Favorite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Favorite">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
@@ -605,6 +691,15 @@
                 <ScalarProperty Name="MusicId" ColumnName="MusicId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Comment1" ColumnName="Comment" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Favorites">
+            <EntityTypeMapping TypeName="MusicModel.Favorite">
+              <MappingFragment StoreEntitySet="Favorites">
+                <ScalarProperty Name="MusicId" ColumnName="MusicId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
