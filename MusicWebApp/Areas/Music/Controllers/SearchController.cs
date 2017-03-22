@@ -8,6 +8,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Configuration;
 
 namespace MusicWebApp.Areas.Music.Controllers
 {
@@ -27,7 +28,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult SearchSongs(JQueryDataTableParamModel param, string search)
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/name/" + search;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music/name/" + search;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             List<MusicWebApp.Models.Music> musics = null;
@@ -64,7 +65,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult SeachSingers(JQueryDataTableParamModel param, string search)
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/singer/name/" + search;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/singer/name/" + search;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             List<Singer> singers = null;
@@ -100,7 +101,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult SearchAlbums(JQueryDataTableParamModel param, string search)
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/album/name/" + search;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/album/name/" + search;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             List<Album> albums = null;

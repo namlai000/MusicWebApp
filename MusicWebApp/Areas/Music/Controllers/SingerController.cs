@@ -11,6 +11,8 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Configuration;
+using System.Configuration;
 
 namespace MusicWebApp.Areas.Music.Controllers
 {
@@ -36,7 +38,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult SingerAbout(int singerId)
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/singer/" + singerId;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/singer/" + singerId;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             Singer model = null;
@@ -56,7 +58,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetArtistsAlbums(JQueryDataTableParamModel param, int singerId)
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/album/singer/" + singerId;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/album/singer/" + singerId;
             List<Album> test = null;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
@@ -95,7 +97,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetArtistsSongs(JQueryDataTableParamModel param, int singerId)
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/singer/" + singerId;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music/singer/" + singerId;
             List<MusicWebApp.Models.Music> test = null;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
@@ -134,10 +136,10 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetArtistsList(JQueryDataTableParamModel param, int genresId, int mode)
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/singer/genres/" + genresId;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/singer/genres/" + genresId;
             if (genresId == 0)
             {
-                api = "http://fmusicapi.azurewebsites.net/MusicProject/singer";
+                api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/singer";
             }
             List<Singer> test = null;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
@@ -179,10 +181,10 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetArtists(int id)
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/singer/genres/" + id;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/singer/genres/" + id;
             if (id == 0)
             {
-                api = "http://fmusicapi.azurewebsites.net/MusicProject/singer";
+                api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/singer";
             }
             List<Singer> test = null;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);

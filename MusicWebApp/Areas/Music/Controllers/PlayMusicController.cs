@@ -11,6 +11,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Configuration;
 
 namespace MusicWebApp.Areas.Music.Controllers
 {
@@ -19,7 +20,7 @@ namespace MusicWebApp.Areas.Music.Controllers
         // GET: Music/PlayMusic
         public ActionResult Index(int musicid)
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/" + musicid;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music/" + musicid;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             MusicWebApp.Models.Music model = null;
@@ -100,7 +101,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult LoadAlbumSong(int albumId)
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/albums/" + albumId;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music/albums/" + albumId;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             List<MusicWebApp.Models.Music> model = null;
@@ -157,7 +158,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetComments(JQueryDataTableParamModel param, int musicId)
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/comments/music/" + musicId;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/comments/music/" + musicId;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             List<Comment> comments = null;
@@ -193,7 +194,7 @@ namespace MusicWebApp.Areas.Music.Controllers
         {
             List<MusicWebApp.Models.Music> test = null;
 
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/genres/" + genresId;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music/genres/" + genresId;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             using (Stream responseStream = response.GetResponseStream())
@@ -220,7 +221,7 @@ namespace MusicWebApp.Areas.Music.Controllers
         [Authorize]
         public ActionResult Download(int id)
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/" + id;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music/" + id;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             MusicWebApp.Models.Music model = null;

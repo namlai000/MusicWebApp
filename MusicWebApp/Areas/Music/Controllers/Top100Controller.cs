@@ -3,6 +3,7 @@ using MusicWebApp.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -30,7 +31,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetTop100(int genresId)
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/top100";
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music/top100";
             List<MusicWebApp.Models.Music> test = null;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();

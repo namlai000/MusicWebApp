@@ -5,11 +5,11 @@ using MusicWebApp.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
 
 namespace MusicWebApp.Areas.Music.Controllers
@@ -31,7 +31,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult Album(int albumId)
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/album/" + albumId;
+            string api = ConfigurationManager.AppSettings["ApiServer"] +  "/MusicProject/album/" + albumId;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             Album album = null;
@@ -52,10 +52,10 @@ namespace MusicWebApp.Areas.Music.Controllers
         {
             List<Album> test = null;
 
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/album/genres/" + genresId;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/album/genres/" + genresId;
             if (genresId == 0)
             {
-                api = "http://fmusicapi.azurewebsites.net/MusicProject/album";
+                api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/album";
             }
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
@@ -96,10 +96,10 @@ namespace MusicWebApp.Areas.Music.Controllers
         {
             List<Album> test = null;
 
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/album/genres/" + genresId;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/album/genres/" + genresId;
             if (genresId == 0)
             {
-                api = "http://fmusicapi.azurewebsites.net/MusicProject/album";
+                api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/album";
             }
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
@@ -140,7 +140,7 @@ namespace MusicWebApp.Areas.Music.Controllers
         {
             List<MusicWebApp.Models.Music> musics = null;
 
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/albums/" + albumId;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music/albums/" + albumId;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             using (Stream responseStream = response.GetResponseStream())
@@ -179,7 +179,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetSameAlbums(int genresId)
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/album/genres/" + genresId;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/album/genres/" + genresId;
             List<Album> test = null;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();

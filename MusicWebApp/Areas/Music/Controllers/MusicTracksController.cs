@@ -3,6 +3,7 @@ using MusicWebApp.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -34,10 +35,10 @@ namespace MusicWebApp.Areas.Music.Controllers
 
             List<MusicWebApp.Models.Music> test = null;
 
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/genres/" + genresId;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music/genres/" + genresId;
             if (genresId == 0)
             {
-                api = "http://fmusicapi.azurewebsites.net/MusicProject/music";
+                api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music";
             }
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
@@ -78,10 +79,10 @@ namespace MusicWebApp.Areas.Music.Controllers
         {
             List<MusicWebApp.Models.Music> test = null;
 
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/genres/" + genresId;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music/genres/" + genresId;
             if (genresId == 0)
             {
-                api = "http://fmusicapi.azurewebsites.net/MusicProject/music";
+                api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music";
             }
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
@@ -123,10 +124,10 @@ namespace MusicWebApp.Areas.Music.Controllers
         {
             List<MusicWebApp.Models.Music> test = null;
 
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/genres/" + genresId;
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music/genres/" + genresId;
             if (genresId == 0)
             {
-                api = "http://fmusicapi.azurewebsites.net/MusicProject/music";
+                api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music";
             }
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);

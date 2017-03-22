@@ -10,6 +10,7 @@ using System.Net;
 using System.IO;
 using Newtonsoft.Json;
 using System.Text;
+using System.Configuration;
 
 namespace MusicWebApp.Areas.Music.Controllers
 {
@@ -23,7 +24,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetTop10()
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/top10";
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music/top10";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             List<MusicWebApp.Models.Music> musics = null;
@@ -49,7 +50,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetMostPopularMusic()
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/top10";
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music/top10";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             List<MusicWebApp.Models.Music> musics = null;
@@ -74,7 +75,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetArtistYouMayLike()
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/singer";
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/singer";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             List<Singer> singers = null;
@@ -100,7 +101,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetNewestTracks()
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/recent10";
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/music/recent10";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             List<MusicWebApp.Models.Music> musics = null;
@@ -127,7 +128,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetNewestAlbums()
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/album/recent10";
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/album/recent10";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             List<Album> albums = null;
@@ -153,7 +154,7 @@ namespace MusicWebApp.Areas.Music.Controllers
 
         public ActionResult GetNewestComments()
         {
-            string api = "http://fmusicapi.azurewebsites.net/MusicProject/comments/recent10";
+            string api = ConfigurationManager.AppSettings["ApiServer"] + "/MusicProject/comments/recent10";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
             WebResponse response = request.GetResponse();
             List<Comment> comments = null;
