@@ -63,10 +63,11 @@
         </div>
         <div class="row">
             <div class="form-group col-md-12">
-                <div class="col-md-3">
-                    <a class="btn btn-raised btn-inverse" href="@Model.Link">Download</a>
+                <div class="col-md-4">
+                    <a class="btn btn-raised btn-inverse" href="@Url.Action("Download", "PlayMusic", new { id = Model.Id })"><i class="glyphicon glyphicon-download-alt"></i> Download</a>
+                    <button class="btn btn-raised btn-success" onclick="AddToFavorite(@Model.Id)"><i class="glyphicon glyphicon-star"></i> Add To Favorite</button>
                 </div>
-                <div class="col-md-9">
+                <div class="col-md-8">
                     <label style="color:black">Scan this to download on your mobile devices!</label><br />
                     <img src="~/Content/StaticImages/6b49499b796c8ba9e52f1feb83cc6053.gif" id="img2" />
                 </div>

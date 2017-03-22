@@ -216,5 +216,22 @@ namespace MusicWebApp.Areas.Music.Controllers
 
             return Json(new { data = data }, JsonRequestBehavior.AllowGet);
         }
+
+        [Authorize]
+        public ActionResult Download(int id)
+        {
+            string api = "http://fmusicapi.azurewebsites.net/MusicProject/music/" + id;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api);
+            WebResponse response = request.GetResponse();
+            MusicWebApp.Models.Music model = null;
+            using (Stream responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                var json = reader.ReadToEnd();
+                model = JsonConvert.DeserializeObject<MusicWebApp.Models.Music>(json);
+            }
+
+            return Redirect(model.Link);
+        }
     }
 }

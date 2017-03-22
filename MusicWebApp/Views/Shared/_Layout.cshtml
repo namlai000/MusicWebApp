@@ -380,7 +380,7 @@
         $.ajax({
             type: 'GET',
             url: '@Url.Action("AddToFavorite", "Favorite")',
-            data: { userId: '@userLogin.Id', musicId: id },
+            data: { userId: '@(userLogin != null ? userLogin.Id.ToString() : "error")', musicId: id },
             success: function (data) {
                 if (data.success) {
                     new PNotify({
@@ -389,13 +389,17 @@
                         type: 'success'
                     });
                 } else {
-                    new PNotify({
-                        title: 'Failed',
-                        text: data.msg,
-                        type: 'error'
-                    });
+                    if (data.msg == null) {
+                        swal('Failed!', 'You need to login first!', 'error');
+                    } else {
+                        new PNotify({
+                            title: 'Failed',
+                            text: data.msg,
+                            type: 'error'
+                        });
+                    }
                 }
-            }
+            },
         });
     }
 
@@ -403,7 +407,7 @@
         $.ajax({
             type: 'GET',
             url: '@Url.Action("DeleteFavorite", "Favorite")',
-            data: { userId: '@userLogin.Id', musicId: id },
+            data: { userId: '@(userLogin != null ? userLogin.Id.ToString() : "error")', musicId: id },
             success: function (data) {
                 if (data.success) {
                     new PNotify({
@@ -415,7 +419,7 @@
                 } else {
                     new PNotify({
                         title: 'Failed',
-                        text: data.msg,
+                        text: (data.msg == null ? "Did you forgot to login?" : data.msg),
                         type: 'error'
                     });
                 }
