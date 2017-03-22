@@ -106,7 +106,7 @@
 
         var progressNotifier = $.connection.progressHub;
         progressNotifier.client.sendMessage = function (count) {
-            $('#message').html("<b>" + count + "</b>");
+            console.log(count);
         };
 
         $.connection.hub.start().done(function () {
@@ -159,7 +159,18 @@
                 error: function (error) {
                     sweetAlert("Failed!", "Error happened", "error");
                     $("#btnUpload").attr("disabled", false);
-                }
+                },
+                xhr: function () {
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function (evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = (evt.loaded / evt.total) * 100;
+                            console.log(percentComplete);
+                            $('#message').html("<b>Uploading Cover and Music ... (" + Math.ceil(percentComplete) + "%)</b>");
+                        }
+                    }, false);
+                    return xhr;
+                },
             });
         }
     }
